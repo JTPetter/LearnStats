@@ -1,0 +1,1206 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Language: de\n"
+"X-Source-Language: American English\n"
+"X-Qt-Contexts: true\n"
+
+msgctxt "Description|"
+msgid "Learn Bayes"
+msgstr "Bayes lernen"
+
+msgctxt "Description|"
+msgid "Counts"
+msgstr "Häufigkeiten"
+
+msgctxt "Description|"
+msgid "Binomial Estimation"
+msgstr "Binomial-Schätzung"
+
+msgctxt "Description|"
+msgid "Binomial Testing"
+msgstr "Binomial-Tests"
+
+msgctxt "Description|"
+msgid "The Problem of Points"
+msgstr "Das Problem der Punkte"
+
+msgctxt "Description|"
+msgid "Game of Chance"
+msgstr "Spiel der Chance"
+
+msgctxt "Description|"
+msgid "Game of Skill"
+msgstr "Spiel der Fähigkeiten"
+
+msgctxt "LSbinomialestimation|"
+msgid "Color palette"
+msgstr "Farbpalette"
+
+msgctxt "LSbinomialestimation|"
+msgid "Colorblind"
+msgstr "Farbenblind"
+
+msgctxt "LSbinomialestimation|"
+msgid "Colorblind Alt."
+msgstr "Farbenblind alt."
+
+msgctxt "LSbinomialestimation|"
+msgid "Viridis"
+msgstr "Viridis"
+
+msgctxt "LSbinomialestimation|"
+msgid "ggplot2"
+msgstr "ggplot2"
+
+msgctxt "LSbinomialestimation|"
+msgid "Gray"
+msgstr "Grau"
+
+msgctxt "LSbinomialestimation|"
+msgid "Model"
+msgstr "Modell"
+
+msgctxt "LSbinomialestimation|"
+msgid "Distribution"
+msgstr "Verteilung"
+
+msgctxt "LSbinomialestimation|"
+msgid "Parameter (θ)"
+msgstr "Parameter (θ)"
+
+msgctxt "LSbinomialestimation|"
+msgid "Model "
+msgstr "Modell "
+
+msgctxt "LSbinomialestimation|"
+msgid "Spike"
+msgstr "Punktmasse"
+
+msgctxt "LSbinomialestimation|"
+msgid "Beta"
+msgstr "Beta"
+
+msgctxt "LSbinomialestimation|"
+msgid "α"
+msgstr "α"
+
+msgctxt "LSbinomialestimation|"
+msgid "β"
+msgstr "β"
+
+msgctxt "LSbinomialestimation|"
+msgid "θ₀"
+msgstr "θ₀"
+
+msgctxt "LSbinomialtesting|"
+msgid "Color palette"
+msgstr "Farbpalette"
+
+msgctxt "LSbinomialtesting|"
+msgid "Colorblind"
+msgstr "Farbenblind"
+
+msgctxt "LSbinomialtesting|"
+msgid "Colorblind Alt."
+msgstr "Farbenblind alt."
+
+msgctxt "LSbinomialtesting|"
+msgid "Viridis"
+msgstr "Viridis"
+
+msgctxt "LSbinomialtesting|"
+msgid "ggplot2"
+msgstr "ggplot2"
+
+msgctxt "LSbinomialtesting|"
+msgid "Gray"
+msgstr "Grau"
+
+msgctxt "LSbinomialtesting|"
+msgid "Hypothesis"
+msgstr "Hypothese"
+
+msgctxt "LSbinomialtesting|"
+msgid "Prior probability"
+msgstr "Prior-Wahrscheinlichkeit"
+
+msgctxt "LSbinomialtesting|"
+msgid "Distribution"
+msgstr "Verteilung"
+
+msgctxt "LSbinomialtesting|"
+msgid "Parameter (θ)"
+msgstr "Parameter (θ)"
+
+msgctxt "LSbinomialtesting|"
+msgid "Hypothesis "
+msgstr "Hypothese "
+
+msgctxt "LSbinomialtesting|"
+msgid "P(H)"
+msgstr "P(H)"
+
+msgctxt "LSbinomialtesting|"
+msgid "Spike"
+msgstr "Punktmasse"
+
+msgctxt "LSbinomialtesting|"
+msgid "Beta"
+msgstr "Beta"
+
+msgctxt "LSbinomialtesting|"
+msgid "α"
+msgstr "α"
+
+msgctxt "LSbinomialtesting|"
+msgid "β"
+msgstr "β"
+
+msgctxt "LSbinomialtesting|"
+msgid "θ₀"
+msgstr "θ₀"
+
+msgctxt "LSgameofchance|"
+msgid "Points needed to win the game"
+msgstr "Punkte zum gewinnen des Spiels"
+
+msgctxt "LSgameofchance|"
+msgid "Number of simulated games"
+msgstr "Anzahl simulierter Spiele"
+
+msgctxt "LSgameofchance|"
+msgid "95% HPD"
+msgstr "95% HPD"
+
+msgctxt "LSgameofskill|"
+msgid "Points needed to win the game"
+msgstr "Punkte zum gewinnen des Spiels"
+
+msgctxt "LSgameofskill|"
+msgid "Number of simulated games"
+msgstr "Anzahl simulierter Spiele"
+
+msgctxt "LSgameofskill|"
+msgid "95% HPD"
+msgstr "95% HPD"
+
+msgctxt "LSgaussianestimation|"
+msgid "Model"
+msgstr "Modell"
+
+msgctxt "LSgaussianestimation|"
+msgid "Distribution"
+msgstr "Verteilung"
+
+msgctxt "LSgaussianestimation|"
+msgid "Parameter (μ)"
+msgstr "Parameter (μ)"
+
+msgctxt "LSgaussianestimation|"
+msgid "Spike"
+msgstr "Punktmasse"
+
+msgctxt "LSgaussianestimation|"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "LSgaussianestimation|"
+msgid "μ₀"
+msgstr "μ₀"
+
+msgctxt "LSgaussianestimation|"
+msgid "σ₀"
+msgstr "σ₀"
+
+msgctxt "LSgaussianestimation|"
+msgid "Observed data"
+msgstr "Beobachtete Daten"
+
+msgctxt "LSgaussianestimation|"
+msgid "Show sample means"
+msgstr "Stichprobenmittelwerte anzeigen"
+
+msgctxt "LSgaussiantesting|"
+msgid "Hypothesis"
+msgstr "Hypothese"
+
+msgctxt "LSgaussiantesting|"
+msgid "Distribution"
+msgstr "Verteilung"
+
+msgctxt "LSgaussiantesting|"
+msgid "Parameter (μ)"
+msgstr "Parameter (μ)"
+
+msgctxt "LSgaussiantesting|"
+msgid "Spike"
+msgstr "Punktmasse"
+
+msgctxt "LSgaussiantesting|"
+msgid "Normal"
+msgstr "Normal"
+
+msgctxt "LSgaussiantesting|"
+msgid "μ₀"
+msgstr "μ₀"
+
+msgctxt "LSgaussiantesting|"
+msgid "σ₀"
+msgstr "σ₀"
+
+msgctxt "LSgaussiantesting|"
+msgid "Observed data"
+msgstr "Beobachtete Daten"
+
+msgctxt "LSgaussiantesting|"
+msgid "Sample means"
+msgstr "Stichprobenmittelwerte"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Data"
+msgstr "Daten"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Input Type"
+msgstr "Eingabetyp"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Select variable"
+msgstr "Variable auswählen"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Specify counts"
+msgstr "Häufigkeiten angeben"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Enter sequence"
+msgstr "Sequenz eingeben"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Count Data"
+msgstr "Häufigkeiten"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Successes"
+msgstr "Erfolge"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Failures"
+msgstr "Misserfolge"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Comma-separated Sequence of Observations"
+msgstr "Komma-getrennte Sequenz von Beobachtungen"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Levels"
+msgstr "Stufen"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Available"
+msgstr "Verfügbar"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Selected"
+msgstr "Ausgewählt"
+
+msgctxt "LSbinomialdatainput|"
+msgid "Data summary"
+msgstr "Datenzusammenfassung"
+
+msgctxt "LSestimationpredictions|"
+msgid "Posterior Prediction"
+msgstr "Posterior-Vorhersage"
+
+msgctxt "LSestimationpredictions|"
+msgid "Number of future trials"
+msgstr "Anzahl zukünftiger Versuche"
+
+msgctxt "LSestimationpredictions|"
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgctxt "LSestimationpredictions|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LSestimationpredictions|"
+msgid "Plots"
+msgstr "Abbildungen"
+
+msgctxt "LSestimationpredictions|"
+msgid "Posterior predictive distribution"
+msgstr "Posterior-prädiktive Verteilung"
+
+msgctxt "LSestimationpredictions|"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "LSestimationpredictions|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LSestimationpredictions|"
+msgid "Individual"
+msgstr "Einzeln"
+
+msgctxt "LSestimationpredictions|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LSestimationpredictions|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LSestimationpredictions|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LSestimationpredictions|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LSestimationpredictions|"
+msgid "Show sample proportions"
+msgstr "Anteile in Stichproben anzeigen"
+
+msgctxt "LSestimationpredictions|"
+msgid "Predictions table"
+msgstr "Vorhersagetabelle"
+
+msgctxt "LSestimationsequential|"
+msgid "Sequential Analysis"
+msgstr "Sequenzielle Analyse"
+
+msgctxt "LSestimationsequential|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LSestimationsequential|"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "LSestimationsequential|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LSestimationsequential|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LSestimationsequential|"
+msgid "BF"
+msgstr "BF"
+
+msgctxt "LSestimationsequential|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LSestimationsequential|"
+msgid "Updating table"
+msgstr "Aktualisierungstabelle"
+
+msgctxt "LSestimationsequential|"
+msgid "Interval"
+msgstr "Intervall"
+
+msgctxt "LSestimationsequential|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LSestimationsequential|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LSestimationsequential|"
+msgid "Posterior updating table"
+msgstr "Posterior-Aktualisierungstabelle"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Data"
+msgstr "Daten"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Input type"
+msgstr "Eingabetyp"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Select variable"
+msgstr "Variable auswählen"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Specify data summary"
+msgstr "Datenzusammenfassung angeben"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Enter sequence"
+msgstr "Sequenz eingeben"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Data summary"
+msgstr "Datenzusammenfassung"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Mean"
+msgstr "Mittelwert"
+
+msgctxt "LSgaussiandatainput|"
+msgid "SD"
+msgstr "SD"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Observations"
+msgstr "Beobachtungen"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Comma-separated sequence of observations"
+msgstr "Komma-getrennte Sequenz von Beobachtungen"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Available"
+msgstr "Verfügbar"
+
+msgctxt "LSgaussiandatainput|"
+msgid "Selected"
+msgstr "Ausgewählt"
+
+msgctxt "LSintrotext|"
+msgid "Introductory texts"
+msgstr "Einführungstexte"
+
+msgctxt "LStestingpredictions|"
+msgid "Posterior Prediction"
+msgstr "Posterior-Vorhersage"
+
+msgctxt "LStestingpredictions|"
+msgid "Number of future trials"
+msgstr "Anzahl zukünftiger Versuche"
+
+msgctxt "LStestingpredictions|"
+msgid "Summary"
+msgstr "Zusammenfassung"
+
+msgctxt "LStestingpredictions|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LStestingpredictions|"
+msgid "Plots"
+msgstr "Abbildungen"
+
+msgctxt "LStestingpredictions|"
+msgid "Posterior predictive distribution"
+msgstr "Posterior-prädiktive Verteilung"
+
+msgctxt "LStestingpredictions|"
+msgid "Conditional"
+msgstr "Konditional"
+
+msgctxt "LStestingpredictions|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LStestingpredictions|"
+msgid "mass"
+msgstr "Masse"
+
+msgctxt "LStestingpredictions|"
+msgid "lower"
+msgstr "untere"
+
+msgctxt "LStestingpredictions|"
+msgid "upper"
+msgstr "obere"
+
+msgctxt "LStestingpredictions|"
+msgid "Joint"
+msgstr "Gemeinsam"
+
+msgctxt "LStestingpredictions|"
+msgid "Overlying"
+msgstr "Überlagernd"
+
+msgctxt "LStestingpredictions|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LStestingpredictions|"
+msgid "Marginal"
+msgstr "Marginal"
+
+msgctxt "LStestingpredictions|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LStestingpredictions|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LStestingpredictions|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LStestingpredictions|"
+msgid "Show sample proportions"
+msgstr "Anteile in Stichproben anzeigen"
+
+msgctxt "LStestingpredictions|"
+msgid "Predictions table"
+msgstr "Vorhersagetabelle"
+
+msgctxt "LStestingsequential|"
+msgid "Sequential Analysis"
+msgstr "Sequenzielle Analyse"
+
+msgctxt "LStestingsequential|"
+msgid "Test results"
+msgstr "Testergebnisse"
+
+msgctxt "LStestingsequential|"
+msgid "Conditional"
+msgstr "Konditional"
+
+msgctxt "LStestingsequential|"
+msgid "Joint"
+msgstr "Gemeinsam"
+
+msgctxt "LStestingsequential|"
+msgid "Normalized"
+msgstr "Normalisiert"
+
+msgctxt "LStestingsequential|"
+msgid "Bayes factor"
+msgstr "Bayesfaktor"
+
+msgctxt "LStestingsequential|"
+msgid "vs. all"
+msgstr "vs. alle"
+
+msgctxt "LStestingsequential|"
+msgid "vs. best"
+msgstr "vs. Beste"
+
+msgctxt "LStestingsequential|"
+msgid "vs."
+msgstr "vs."
+
+msgctxt "LStestingsequential|"
+msgid "BF₁₀"
+msgstr "BF₁₀"
+
+msgctxt "LStestingsequential|"
+msgid "BF₀₁"
+msgstr "BF₀₁"
+
+msgctxt "LStestingsequential|"
+msgid "log(BF₁₀)"
+msgstr "log(BF₁₀)"
+
+msgctxt "LStestingsequential|"
+msgid "Updating table"
+msgstr "Aktualisierungstabelle"
+
+msgctxt "Description|"
+msgid "Learn Bayesian statistics with simple examples and supporting text"
+msgstr ""
+"Lerne Bayessche Statistik mit einfachen Beispielen und unterstützendem Text"
+
+msgctxt "Description|"
+msgid "Binary Classification"
+msgstr "Binäre Klassifikation"
+
+msgctxt "LSbinaryclassification|"
+msgid "Input type"
+msgstr "Eingabetyp"
+
+msgctxt "LSbinaryclassification|"
+msgid "Point estimates"
+msgstr "Punktschätzungen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Uncertain estimates"
+msgstr "Unsichere Schätzungen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Load data and specify threshold"
+msgstr "Daten laden und Schwellenwert festlegen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Estimates"
+msgstr "Schätzungen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Prevalence"
+msgstr "Prävalenz"
+
+msgctxt "LSbinaryclassification|"
+msgid "Sensitivity"
+msgstr "Sensitivität"
+
+msgctxt "LSbinaryclassification|"
+msgid "Specificity"
+msgstr "Spezifizität"
+
+msgctxt "LSbinaryclassification|"
+msgid "Marker"
+msgstr "Marker"
+
+msgctxt "LSbinaryclassification|"
+msgid "Positive condition (binary)"
+msgstr "Positiver Zustand (binär)"
+
+msgctxt "LSbinaryclassification|"
+msgid "Test threshold"
+msgstr "Test-Schwellenwert"
+
+msgctxt "LSbinaryclassification|"
+msgid "Data"
+msgstr "Daten"
+
+msgctxt "LSbinaryclassification|"
+msgid "True positive"
+msgstr "Richtig positiv"
+
+msgctxt "LSbinaryclassification|"
+msgid "False positive"
+msgstr "Falsch positiv"
+
+msgctxt "LSbinaryclassification|"
+msgid "False negative"
+msgstr "Falsch negativ"
+
+msgctxt "LSbinaryclassification|"
+msgid "True negative"
+msgstr "Richtig negativ"
+
+msgctxt "LSbinaryclassification|"
+msgid "Priors"
+msgstr "Prior"
+
+msgctxt "LSbinaryclassification|"
+msgid ")"
+msgstr ")"
+
+msgctxt "LSbinaryclassification|"
+msgid "Tables"
+msgstr "Tabellen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Statistics"
+msgstr "Statistiken"
+
+msgctxt "LSbinaryclassification|"
+msgid "Confusion matrix"
+msgstr "Konfusionsmatrix"
+
+msgctxt "LSbinaryclassification|"
+msgid "Text"
+msgstr "Text"
+
+msgctxt "LSbinaryclassification|"
+msgid "Number"
+msgstr "Werte"
+
+msgctxt "LSbinaryclassification|"
+msgid "Both"
+msgstr "Beide"
+
+msgctxt "LSbinaryclassification|"
+msgid "Additional info"
+msgstr "Weitere Infos"
+
+msgctxt "LSbinaryclassification|"
+msgid "Priors and posteriors"
+msgstr "Prior und Posterior"
+
+msgctxt "LSbinaryclassification|"
+msgid "Plots"
+msgstr "Abbildungen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Probability positive"
+msgstr "Wahrscheinlichkeit Positiv"
+
+msgctxt "LSbinaryclassification|"
+msgid "Show entire distribution"
+msgstr "Gesamte Verteilung anzeigen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Icon plot"
+msgstr "Icon-Plot"
+
+msgctxt "LSbinaryclassification|"
+msgid "ROC"
+msgstr "ROC"
+
+msgctxt "LSbinaryclassification|"
+msgid "Add realizations from the posterior"
+msgstr "Realisierungen vom Posterior hinzufügen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Test characteristics by threshold"
+msgstr "Test-Charakteristika nach Schwellwert"
+
+msgctxt "LSbinaryclassification|"
+msgid "PPV and NPV by prevalence"
+msgstr "PPW und NPW nach Prävalenz"
+
+msgctxt "LSbinaryclassification|"
+msgid "Alluvial plot"
+msgstr "Flussdiagramm"
+
+msgctxt "LSbinaryclassification|"
+msgid "Signal detection"
+msgstr "Signal-Erkennung"
+
+msgctxt "LSbinaryclassification|"
+msgid "True positive rate"
+msgstr "Richtig-positiv-Rate"
+
+msgctxt "LSbinaryclassification|"
+msgid "False positive rate"
+msgstr "Falsch-positiv-Rate"
+
+msgctxt "LSbinaryclassification|"
+msgid "True negative rate"
+msgstr "Richtig-negativ-Rate"
+
+msgctxt "LSbinaryclassification|"
+msgid "False negative rate"
+msgstr "Falsch-negativ-Rate"
+
+msgctxt "LSbinaryclassification|"
+msgid "Positive predictive value"
+msgstr "Positiv prädiktiver Wert"
+
+msgctxt "LSbinaryclassification|"
+msgid "Negative predictive value"
+msgstr "Negativ prädiktiver Wert"
+
+msgctxt "LSbinaryclassification|"
+msgid "False discovery rate"
+msgstr "Falscherkennungsrate"
+
+msgctxt "LSbinaryclassification|"
+msgid "False omission rate"
+msgstr "Falsche Auslassungsrate"
+
+msgctxt "LSbinaryclassification|"
+msgid "Accuracy"
+msgstr "Genauigkeit"
+
+msgctxt "LSbinaryclassification|"
+msgid "Plot type"
+msgstr "Abbildungstyp"
+
+msgctxt "LSbinaryclassification|"
+msgid "Interval"
+msgstr "Intervall"
+
+msgctxt "LSbinaryclassification|"
+msgid "Half-eye"
+msgstr "Halb-Auge"
+
+msgctxt "LSbinaryclassification|"
+msgid "Options"
+msgstr "Optionen"
+
+msgctxt "LSbinaryclassification|"
+msgid "Credible intervals"
+msgstr "Glaubwürdigkeitsintervalle"
+
+msgctxt "LSbinaryclassification|"
+msgid "Number of posterior samples"
+msgstr "Umfang der Posterior-Stichprobe"
+
+msgctxt "LSgaussianestimation|"
+msgid "Color palette"
+msgstr "Farbpalette"
+
+msgctxt "LSgaussianestimation|"
+msgid "Colorblind"
+msgstr "Farbenblind"
+
+msgctxt "LSgaussianestimation|"
+msgid "Colorblind Alt."
+msgstr "Farbenblind alt."
+
+msgctxt "LSgaussianestimation|"
+msgid "Viridis"
+msgstr "Viridis"
+
+msgctxt "LSgaussianestimation|"
+msgid "ggplot2"
+msgstr "ggplot2"
+
+msgctxt "LSgaussianestimation|"
+msgid "Gray"
+msgstr "Grau"
+
+msgctxt "LSgaussiantesting|"
+msgid "Color palette"
+msgstr "Farbpalette"
+
+msgctxt "LSgaussiantesting|"
+msgid "Colorblind"
+msgstr "Farbenblind"
+
+msgctxt "LSgaussiantesting|"
+msgid "Colorblind Alt."
+msgstr "Farbenblind alt."
+
+msgctxt "LSgaussiantesting|"
+msgid "Viridis"
+msgstr "Viridis"
+
+msgctxt "LSgaussiantesting|"
+msgid "ggplot2"
+msgstr "ggplot2"
+
+msgctxt "LSgaussiantesting|"
+msgid "Gray"
+msgstr "Grau"
+
+msgctxt "LSgaussiantesting|"
+msgid "Observed mean"
+msgstr "Beobachteter Mittelwert"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Prior and Posterior Distributions"
+msgstr "Prior- und Posterior-Verteilungen"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Prior distribution"
+msgstr "Prior-Verteilung"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "All"
+msgstr "Alle"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Individual"
+msgstr "Einzeln"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Posterior distribution"
+msgstr "Posterior-Verteilung"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "BF"
+msgstr "BF"
+
+msgctxt "LSestimationpriorandposterior|"
+msgid "Observed proportion"
+msgstr "Beobachtetes Verhältnis"
+
+msgctxt "LSestimationsequential|"
+msgid "Stacked distributions"
+msgstr "Gestapelte Verteilungen"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Predictive Performance"
+msgstr "Vorhersageleistung"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Prior predictive distribution"
+msgstr "Prior-prädiktive Verteilung"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Conditional"
+msgstr "Konditional"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Joint"
+msgstr "Gemeinsam"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Overlying"
+msgstr "Überlagernd"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Marginal"
+msgstr "Marginal"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Observed number of successes"
+msgstr "Beobachtete Anzahl von Erfolgen"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Predictions table"
+msgstr "Vorhersagetabelle"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Predictive accuracy"
+msgstr "Vorhersagegenauigkeit"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Normalized"
+msgstr "Normalisiert"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "Bayes Factor"
+msgstr "Bayesfaktor"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "vs."
+msgstr "vs."
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "vs. rest"
+msgstr "vs. Rest"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "vs. best"
+msgstr "vs. Bestes"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "BF₁₀"
+msgstr "BF₁₀"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "BF₀₁"
+msgstr "BF₀₁"
+
+msgctxt "LStestingpredictiveperformance|"
+msgid "log(BF₁₀)"
+msgstr "Log(BF₁₀)"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Prior and Posterior Distributions"
+msgstr "Prior- und Posterior-Verteilungen"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Prior distribution"
+msgstr "Prior-Verteilung"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Conditional"
+msgstr "Konditional"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Point estimate"
+msgstr "Punktschätzung"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "CI"
+msgstr "GI"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Mass"
+msgstr "Masse"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Lower"
+msgstr "Untere"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Upper"
+msgstr "Obere"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Joint"
+msgstr "Gemeinsam"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Overlying"
+msgstr "Überlagernd"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Stacked"
+msgstr "Gestapelt"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Marginal"
+msgstr "Marginal"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Posterior distribution"
+msgstr "Posterior-Verteilung"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "BF"
+msgstr "BF"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Observed proportion"
+msgstr "Beobachtetes Verhältnis"
+
+msgctxt "LStestingpriorandposterior|"
+msgid "Prior and posterior distribution"
+msgstr "Prior- und Posterior-Verteilung"
+
+msgctxt "LSbinaryclassification|"
+msgid "~ Beta(α = "
+msgstr "~ Beta(α = "
+
+msgctxt "Description|"
+msgid "Simulating Buffon's Needle"
+msgstr "Simulieren von Buffons Nadel"
+
+msgctxt "Description|"
+msgid "Manipulating Buffon's Needle"
+msgstr "Manipulieren von Buffons Nadel"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Proportion of needle length to interline distance:"
+msgstr "Verhältnis der Nadellänge zum Linienabstand:"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "%"
+msgstr "%"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Number of throws:"
+msgstr "Anzahl von Würfen:"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Number of crosses:"
+msgstr "Anzahl der Schnittpunkte:"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Prior for the proportion of crosses"
+msgstr "Prior für den Anteil der Schnittpunkte"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Prior parameter a: "
+msgstr "Prior-Parameter a: "
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Prior parameter b:"
+msgstr "Prior-Parameter b:"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Credible interval on π"
+msgstr "Glaubwürdigkeitsintervall auf π"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Plot"
+msgstr "Diagramm"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Prior and posterior for the proportion of crosses"
+msgstr "Prior und Posterior für den Anteil der Schnittpunkte"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Legend"
+msgstr "Legende"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Implied prior and posterior for π"
+msgstr "Implizierter Prior und Posterior für π"
+
+msgctxt "LSBuffonsneedlemanipulation|"
+msgid "Credible interval"
+msgstr "Glaubwürdigkeitsintervall"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Proportion of needle length to interline distance:"
+msgstr "Verhältnis von Nadellänge zu Linienabstand:"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "%"
+msgstr "%"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Number of throws:"
+msgstr "Anzahl von Würfen:"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Prior for the proportion of crosses"
+msgstr "Vorher für den Anteil der Schnittpunkte"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Beta prior: parameter a"
+msgstr "Beta-Prior: Parameter a"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Beta prior: parameter b"
+msgstr "Beta-Prior: Parameter b"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Credible interval on π"
+msgstr "Glaubwürdigkeitsintervall für π"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Plot"
+msgstr "Diagramm"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Needle plot"
+msgstr "Nadeldiagramm"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Color crossing needles"
+msgstr "Farbe der Nadelschnittpunkte"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Prior and posterior for the proportion of crosses"
+msgstr "Prior und Posterior für den Anteil der Schnittpunkte"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Legend"
+msgstr "Legende"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Implied prior and posterior for π"
+msgstr "Implizierter Prior und Posterior für π"
+
+msgctxt "LSBuffonsneedlesimulation|"
+msgid "Credible interval"
+msgstr "Glaubwürdigkeitsintervall"
+
+msgctxt "Description|"
+msgid "Buffon's Needle (Beta)"
+msgstr "Buffonsche Nadel (Beta)"
