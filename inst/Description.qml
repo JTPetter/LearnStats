@@ -21,6 +21,13 @@ Description
 		qml:	"LSTcentralLimitTheorem.qml"
 		func:	"LSTcentralLimitTheorem"
 	}
+	
+		Analysis
+	{
+		title:	qsTr("Descriptive Statistics")
+		qml:	"LSTdescriptives.qml"
+		func:	"LSTdescriptives"
+	}
 
 
 }

@@ -30,70 +30,20 @@ LSTcentralLimitTheorem <- function(jaspResults, dataset, options, state = NULL) 
   jaspResults[["cltParentDistribution"]] <- createJaspContainer(gettext("Parent Distribution"))
   jaspResults[["cltParentDistribution"]]$position <- 1
   
-  # h <- hist(parentData[["x"]], freq = F, plot = F, breaks = 'Sturges')
-  # densities <- h$density
-  # yBreaks <- jaspGraphs::getPrettyAxisBreaks(c(0, max(densities)+0.1))
-  # yLimits <- range(yBreaks)
-  # xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(h$breaks), min.n = 4)
-  # xLimits <- range(xBreaks)
-  # binWidth <- (h$breaks[2] - h$breaks[1])
-  
   distribution <- options[["cltParentDistribution"]]
   mean <- options[["cltMean"]]
   sd <- options[["cltStdDev"]]
   if(options[["cltSkewIntensity"]] == "low"){
-    skew <- 1.5
+    skew <- 2
   }else if(options[["cltSkewIntensity"]] == "medium"){
-    skew <- 3
+    skew <- 5
   }else if(options[["cltSkewIntensity"]] == "high"){
-    skew <- 10
+    skew <- 50
   }
   
   pdPlot <- createJaspPlot(title = gettext("Parent Distribution"), width = 700, height = 400)
-  
-  
-  if(distribution == "normal"){
-    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 3*sd, mean + 3*sd ))
-    xLimits <- range(xBreaks)
-    pdPlotObject <-  ggplot2::ggplot(data.frame(x = xBreaks), ggplot2::aes(x = x)) +
-      ggplot2::stat_function(fun = dnorm, n = 100, args = list(mean = mean, sd = sd), fill = "coral")
-  }else if(distribution == "uniform"){
-    min <- mean - sd/2
-    max <- mean + sd/2
-    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(min - sd/4, max + sd/4))
-    xLimits <- range(xBreaks)
-    pdPlotObject <-  ggplot2::ggplot(data.frame(x = xBreaks), ggplot2::aes(x = x)) +
-      ggplot2::stat_function(fun = dunif, n = 100, args = list(min = min, max = max), fill = "coral")
-  }else if(distribution == "skewed"){
-    if (options[["cltSkewDirection"]] == "left")
-      skew <- skew * -1
-    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 3*sd, mean + 3*sd ))
-    xLimits <- range(xBreaks)
-    pdPlotObject <-  ggplot2::ggplot(data.frame(x = .scaledSkewedNormal(100000, xi = mean, omega = sd, alpha = skew)),
-                                     ggplot2::aes(x = x)) + ggplot2::geom_density(mapping = ggplot2::aes(y = ..density..),
-                                                                                  n = 2^7, bw = 0.3, fill = "coral")
-  }
-  yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(pdPlotObject)$data[[1]]$y)
-  yLimits <- range(yBreaks)
-  
-  pdPlotObject <- pdPlotObject + ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "") +
-    ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits, name = "Density") +
-    ggplot2::geom_vline(xintercept = mean, color = "darkmagenta", size = 1) +
-    ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean: %.2f", mean)), 
-                                               mapping = ggplot2::aes(x = x, y = y, label = label), color = "darkmagenta", size = 6) +
-    jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
-
-  # pdPlotObject <-  ggplot2::ggplot(parentData, ggplot2::aes(x = x)) + 
-  #   ggplot2::geom_histogram(mapping = ggplot2::aes(y =..density..), fill = "coral", col = "black", size = .7,
-  #                           binwidth = binWidth, center = binWidth/2) +
-  #   ggplot2::geom_density(size = 1) + 
-  #   ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits) +
-  #   ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "") +
-  #   +
-  #    +
-  #   jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
-  
-  pdPlot$plotObject <- pdPlotObject
+  pdPlot$plotObject <- .distributionPlotFunction(distribution, mean, sd, skew, skewDirection = options[["cltSkewDirection"]],
+                                                 fillColor = "coral")
   jaspResults[["cltParentDistribution"]] <- pdPlot
 }
 
@@ -135,7 +85,7 @@ LSTcentralLimitTheorem <- function(jaspResults, dataset, options, state = NULL) 
   xLimits <- range(xBreaks)
   binWidth <- (h2$breaks[2] - h2$breaks[1])
   
-
+  
   
   index <- 0
   
@@ -156,19 +106,19 @@ LSTcentralLimitTheorem <- function(jaspResults, dataset, options, state = NULL) 
           ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "") +
           ggplot2::geom_vline(xintercept = mean, color = "cornflowerblue", size = 1) +
           ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean: %.2f", mean)), 
-                             mapping = ggplot2::aes(x = x, y = y, label = label), color = "cornflowerblue", size = 6) +
+                              mapping = ggplot2::aes(x = x, y = y, label = label), color = "cornflowerblue", size = 6) +
           ggplot2::ggtitle(gettextf("Sample Nr. %i", index)) +
           jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
-        }
+      }
       plotMat[[i,j]] <- samplePlot
     }
   }
   
   
-
-    
-    
-    
+  
+  
+  
+  
   p <- jaspGraphs::ggMatrixPlot(plotMat)
   matrixPlot$plotObject <- p
   
@@ -238,7 +188,7 @@ LSTcentralLimitTheorem <- function(jaspResults, dataset, options, state = NULL) 
   }
   
   
-    sdPlotObject <- sdPlotObject + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
+  sdPlotObject <- sdPlotObject + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
   
   sdPlot$plotObject <- sdPlotObject
   jaspResults[["cltSamplingDistribution"]] <- sdPlot
@@ -247,4 +197,55 @@ LSTcentralLimitTheorem <- function(jaspResults, dataset, options, state = NULL) 
 .scaledSkewedNormal <- function(n, xi=0, omega=1, alpha=0, tau=0){
   y <- xi + omega*scale(sn::rsn(n, xi = xi, omega = omega, alpha = alpha, tau = tau))
   return(y)
+}
+
+
+.distributionPlotFunction <- function(distribution = c("normal", "uniform", "skewed"), mean, sd, skew, skewDirection = "right", fillColor,
+                                      showMean = TRUE, returnData = FALSE){
+  
+  if(distribution == "normal"){
+    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 3*sd, mean + 3*sd ))
+    xLimits <- range(xBreaks)
+    pdPlotObject <-  ggplot2::ggplot(data.frame(x = xBreaks), ggplot2::aes(x = x)) +
+      ggplot2::stat_function(fun = dnorm, n = 100, args = list(mean = mean, sd = sd), geom = "area", fill = fillColor) +
+      ggplot2::stat_function(fun = dnorm, n = 100, args = list(mean = mean, sd = sd))
+    if(returnData)
+      df <- data.frame(x = rnorm(n = 100000, mean = mean, sd = sd))
+  }else if(distribution == "uniform"){
+    min <- mean - sd/2
+    max <- mean + sd/2
+    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(min - sd/4, max + sd/4))
+    xLimits <- range(xBreaks)
+    pdPlotObject <-  ggplot2::ggplot(data.frame(x = xBreaks), ggplot2::aes(x = x)) +
+      ggplot2::stat_function(fun = dunif, n = 100, args = list(min = min, max = max), geom = "area", fill = fillColor) +
+      ggplot2::stat_function(fun = dunif, n = 100, args = list(min = min, max = max))
+    if(returnData)
+      df <- data.frame(x = runif(n = 100000, min = min, max = max))
+  }else if(distribution == "skewed"){
+    if (skewDirection == "left")
+      skew <- skew * -1
+    xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 3*sd, mean + 3*sd ))
+    xLimits <- range(xBreaks)
+    df <- data.frame(x = .scaledSkewedNormal(100000, xi = mean, omega = sd, alpha = skew))
+    pdPlotObject <-  ggplot2::ggplot(df, ggplot2::aes(x = x)) + ggplot2::geom_density(mapping = ggplot2::aes(y = ..density..),
+                                                                                      n = 2^7, bw = sd/3, fill = fillColor)
+  }
+  yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(pdPlotObject)$data[[1]]$y)
+  yLimits <- range(yBreaks)
+  
+  pdPlotObject <- pdPlotObject + ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "") +
+    ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits, name = "Density")
+  if(showMean){
+    pdPlotObject <- pdPlotObject + ggplot2::geom_vline(xintercept = mean, color = "darkmagenta", size = 1) + 
+      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean: %.2f", mean)), 
+                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "darkmagenta", size = 6)
+  }
+  pdPlotObject <- pdPlotObject + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
+  
+  if(!returnData)
+    return(pdPlotObject)
+  
+  if(returnData){
+    return(list(plotobject = pdPlotObject, data = df))
+  }
 }
