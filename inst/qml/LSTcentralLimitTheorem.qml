@@ -28,98 +28,224 @@ Form
 	
 	Section
 	{
-	title: qsTr("Parent Distribution")
+		title: qsTr("Parent Distribution")
+
+		Group
+		{
 		
-		DropDown
-		{
-		name: "cltParentDistribution"
-		label: qsTr("Parent Distribution")
-		indexDefaultValue: 0
-		values:
-		[
-		{label: qsTr("Normal"),		value: "normal"},
-		{label: qsTr("Uniform"),	value: "uniform"},
-		{label: qsTr("Skewed"),		value: "skewed"}
-		]
-		id: cltParentDistribution
-		}
-	
-		DoubleField
-		{
-		name: "cltMean"
-		label: qsTr("Mean")
-		fieldWidth: 60
-		defaultValue: 0
-		decimals: 2
-		}
-	
-		DoubleField
-		{
-		name: "cltStdDev"
-		label: qsTr("Std. Dev.")
-		fieldWidth: 60
-		defaultValue: 1
-		decimals: 2
-		min:			0.01
-		}
-	
-		DropDown
-		{
-		name: "cltSkewDirection"
-		label: qsTr("Skew Direction")
-		indexDefaultValue: 0
-		visible: cltParentDistribution.currentValue == "skewed"
-		values:
-		[
-		{label: qsTr("Left"),		value: "left"},
-		{label: qsTr("Right"),		value: "right"}
-		]
-		id: cltSkewDirection
-		}
-	
-		DropDown
-		{
-		name: "cltSkewIntensity"
-		label: qsTr("Skew Intensity")
-		indexDefaultValue: 0
-		visible: cltParentDistribution.currentValue == "skewed"
-		values:
-		[
-		{label: qsTr("Low skew"),		value: "low"},
-		{label: qsTr("Medium skew"),		value: "medium"},
-		{label: qsTr("High skew"),		value: "high"}
-		]
-		id: cltSkewIntensity
-		}
-	}
-		Section
-	{
-	title: qsTr("Sample Options")
-	
-		DoubleField
-		{
-		name: "cltSampleSize"
-		label: qsTr("Sample Size")
-		fieldWidth: 60
-		defaultValue: 30
-		decimals: 0
+			DropDown
+			{
+				name:				"cltParentDistribution"
+				label:				qsTr("Parent Distribution")
+				indexDefaultValue:	0
+				id:					cltParentDistribution
+				values:
+				[
+					{label: qsTr("Normal"),		value: "normal"},
+					{label: qsTr("Uniform"),	value: "uniform"},
+					{label: qsTr("Skewed"),		value: "skewed"}
+				]
+			}
+			
+			CheckBox
+			{
+				name:		"parentShow"
+				label:		qsTr("Show parent distribution")
+				checked:	true
+			}
 		}
 		
-		DoubleField
+		Group
 		{
-		name: "cltSampleAmount"
-		label: qsTr("Number of Samples")
-		fieldWidth: 60
-		defaultValue: 100
-		decimals: 0
+			DoubleField
+			{
+				name:			"cltMean"
+				label:			qsTr("Mean")
+				fieldWidth:		60
+				defaultValue:	0
+				decimals:		2
+			}
+	
+			DoubleField
+			{
+				name:			"cltStdDev"
+				label:			qsTr("Std. Dev.")
+				fieldWidth:		60
+				defaultValue:	1
+				decimals:		2
+				min:			0.01
+				visible:		cltParentDistribution.currentValue != "uniform"
+			}
+			
+			DoubleField
+			{
+				name:			"cltRange"
+				label:			qsTr("Range")
+				fieldWidth:		60
+				defaultValue:	1
+				decimals:		2
+				min:			0.01
+				visible:		cltParentDistribution.currentValue == "uniform"
+			}
+	
+			DropDown
+			{
+				name:				"cltSkewDirection"
+				label:				qsTr("Skew Direction")
+				indexDefaultValue:	0
+				visible:			cltParentDistribution.currentValue == "skewed"
+				id:					cltSkewDirection
+				values:
+				[
+					{label: qsTr("Left"),		value: "left"},
+					{label: qsTr("Right"),		value: "right"}
+				]
+			}
+	
+			DropDown
+			{
+				name:				"cltSkewIntensity"
+				label:				qsTr("Skew Intensity")
+				indexDefaultValue:	0
+				visible:			cltParentDistribution.currentValue == "skewed"
+				id:					cltSkewIntensity
+				values:
+				[
+					{label: qsTr("Low skew"),		value: "low"},
+					{label: qsTr("Medium skew"),		value: "medium"},
+					{label: qsTr("High skew"),		value: "high"}
+				]
+			}
 		}
 	}
 	
-		Section
+	Section
 	{
-	title: qsTr("Sampling Distribution Options")
+		title: qsTr("Sample Options")
 	
-	CheckBox{name: "SamplingDistShowNormal";		label: qsTr("Superimpose Normal Distribution"); checked: true}
+		Group
+		{
 	
+			DoubleField
+			{
+				name:			"cltSampleSize"
+				label:			qsTr("Number of observations per sample")
+				fieldWidth:		60
+				defaultValue:	30
+				decimals:		0
+			}
+		
+			DoubleField
+			{
+				name:			"cltSampleAmount"
+				label:			qsTr("Number of total samples")
+				fieldWidth:		60
+				defaultValue:	100
+				decimals:		0
+			}
+		}
+		
+		Group
+		{
+		
+			CheckBox
+			{
+				name:		"samplesShow";
+				label:		qsTr("Show samples");
+				checked:	true
+	
+				CheckBox
+				{
+					name:		"samplesShowRugs"
+					label:		qsTr("Show rug marks")
+					checked:	true
+				}
+			}
+		
+			DoubleField
+			{
+				name:			"cltSampleSeed"
+				label:			qsTr("Set seed")
+				fieldWidth:		60
+				defaultValue:	1
+				decimals:		0
+			}
+		}
+	}
+	
+	Section
+	{
+		title: qsTr("Sampling Distribution Options")
+	
+		CheckBox
+		{
+			name:		"samplingDistShow";
+			label:		qsTr("Show sampling distribution");
+			checked:	true
+	
+			CheckBox
+			{
+				name:		"samplingDistShowNormal";
+				label:		qsTr("Superimpose normal distribution");
+				checked:	true
+			}
+			
+			CheckBox
+			{
+				name: "samplingDistShowRugs"
+				label: qsTr("Show rug marks")
+				checked: true
+			}
+		}
+	}
+	
+	Section
+	{
+		title: qsTr("Plot Options")
+	
+		DropDown
+		{
+			name:				"cltColorPalette"
+			label:				qsTr("Color palette")
+			indexDefaultValue:	0
+			values:
+			[
+				{ label: qsTr("Colorblind"),		value: "colorblind"		},
+				{ label: qsTr("Colorblind Alt."),	value: "colorblind3"	},
+				{ label: qsTr("Viridis"),			value: "viridis"		},
+				{ label: qsTr("ggplot2"),			value: "ggplot2"		},
+				{ label: qsTr("Gray"),				value: "gray"			}
+			]
+		}
+			
+		Group
+		{
+	
+			DropDown
+			{
+				name:				"cltBinWidthType"
+				label:				qsTr("Bin width type")
+				indexDefaultValue:	0
+				id:					binWidthType
+				values:
+				[
+				{label: qsTr("Sturges"),				value: "sturges"},
+				{label: qsTr("Scott"),					value: "scott"},
+				{label: qsTr("Doane"),					value: "doane"},
+				{label: qsTr("Freedman-Diaconis"),		value: "fd"	},
+				{label: qsTr("Manual"),					value: "manual"	}
+				]
+			}
+				
+			DoubleField
+			{
+				name:			"cltNumberOfBins"
+				label:			qsTr("Number of bins")
+				defaultValue:	30
+				min:			3;
+				max:			10000;
+				enabled:		binWidthType.currentValue === "manual"
+			}			
+		}
 	}
 }

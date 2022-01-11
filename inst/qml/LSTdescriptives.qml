@@ -26,9 +26,107 @@ Form
 {
 	columns: 1
 	
-	Section
+	
+	
+	Group
 	{
-	title: qsTr("Central Tendency")
+	
+				DropDown
+		{
+		name: "LSdescCentralOrSpread"
+		label: qsTr("Statistics to explain")
+		indexDefaultValue: 0
+		values:
+		[
+		{label: qsTr("Central tendency"),		value: "LSdescCentralTendency"},
+		{label: qsTr("Spread"),	value: "LSdescSpread"}
+		]
+		id: lsDescCentralOrSpread
+		}
+		
+		
+			
+	RadioButtonGroup
+	{
+		columns:	3
+		name:		"dataType"
+		title:		qsTr("Data Input Type")
+		id:			dataType
+		
+		
+		
+						RadioButton
+		{
+			value:		"dataRandom"
+			label:		qsTr("Random Sample")
+			id:			dataTypeA
+			checked:	true
+		}
+		
+				RadioButton
+		{
+			value:		"dataSequence"
+			label:		qsTr("Enter sequence")
+			id:			dataTypeB
+		}
+
+		RadioButton
+		{
+			value:		"dataVariable"
+			label:		qsTr("Select variable")
+			id:			dataTypeC
+			enabled:	mainWindow.dataAvailable
+		}
+
+
+
+	}
+
+
+	TextArea
+	{
+		title:		qsTr("Comma-separated Sequence of Observations")
+		visible:	dataTypeB.checked
+		height:		100
+		name:     "dataSequenceInput"
+		textType:	JASP.TextTypeSource
+		separators:	[",",";","\n"]
+	}
+
+
+	Group
+	{
+		visible: dataTypeC.checked
+
+		VariablesForm
+		{
+			preferredHeight:	150
+
+			AvailableVariablesList
+			{
+				name:	"allVariables"
+				title:	qsTr("Available")
+			}
+
+			AssignedVariablesList
+			{
+				name:				"selectedVariable"
+				title:				qsTr("Selected")
+				singleVariable:		true
+				allowedColumns:		["ordinal", "scale"]
+
+			}
+		}
+	}
+
+	}
+	
+	
+		Section
+	{
+	title: qsTr("Central Tendency Measures")
+	visible: lsDescCentralOrSpread.currentValue == "LSdescCentralTendency"
+	
 
 		RadioButtonGroup
 		{
@@ -38,20 +136,20 @@ Form
 			RadioButton
 			{
 			name:                               "LSdescMean"
-			label:                              qsTr("Explain Mean")
+			label:                              qsTr("Show Mean")
 			checked:                            true
 			}
 
 			RadioButton
 			{
 			name:                               "LSdescMedian"
-			label:                              qsTr("Explain Median")
+			label:                              qsTr("Show Median")
 			}
 		
 			RadioButton
 			{
 			name:                               "LSdescMode"
-			label:                              qsTr("Explain Mode")
+			label:                              qsTr("Show Mode")
 			}
 			
 						RadioButton
@@ -61,14 +159,59 @@ Form
 			}
 		}
 		
+			CheckBox{name: "LSdescExplanationC";
+			label: qsTr("Show explanation");
+			checked: true
+					}
+					
+	}
+	
+	
+	
+			Section
+	{
+	title: qsTr("Measures of spread")
+	visible: lsDescCentralOrSpread.currentValue == "LSdescSpread"
+	
+
+		RadioButtonGroup
+		{
+		title:                                  qsTr("Select measure of spread")
+		name:                                   "LSdescSpread"
+
+			RadioButton
+			{
+			name:                               "LSdescRange"
+			label:                              qsTr("Show range")
+			checked:                            true
+			}
+
+			RadioButton
+			{
+			name:                               "LSdescQR"
+			label:                              qsTr("Show quartiles")
+			}
 		
-		TextArea
-				{
-					name:						"LSdescOwnDist"
-					height:                     100 * preferencesModel.uiScale
-					width:                      250 * preferencesModel.uiScale
-					title:                      qsTr("Type your own values")
-					textType:                   JASP.TextTypeSource
-				}
-	}	
+			RadioButton
+			{
+			name:                               "LSdescVar"
+			label:                              qsTr("Show variance")
+			}
+			
+			RadioButton
+			{
+			name:                               "LSdescSD"
+			label:                              qsTr("Show standard deviation")
+			}
+		}
+		
+			CheckBox{name: "LSdescExplanationS";
+			label: qsTr("Show explanation");
+			checked: true
+					}
+					
+	}
+	
+	
+
 }

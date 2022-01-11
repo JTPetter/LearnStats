@@ -51,9 +51,14 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   
   if(options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM"){
     median <- median(df$x)
-    pdPlotObject <- pdPlotObject + ggplot2::geom_vline(xintercept = median, size = 1, color = "green") +
+    pdPlotObject <- pdPlotObject +
+      ggplot2::geom_vline(xintercept = median, size = 1, color = "green") +
       ggplot2::geom_label(data = data.frame(x = median, y = max(yLimits)*0.85, label = gettext("Median")), 
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+    
+    
+    #ggplot2::geom_area(mapping = ggplot2::aes(x = ifelse(x>65 & x< 70 , x, 0)),
+    # fill = 'purple') +      MAP DENSITY AT TOP LAYER??
   }
   
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
@@ -67,10 +72,4 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   pdPlot$plotObject <- pdPlotObject
   
   jaspResults[["cltParentDistribution"]] <- pdPlot
-}
-
-
-.calculateMode <- function(x){
-  uniq <- unique(x)
-  uniq[which.max(tabulate(match(x, uniq)))]
 }
