@@ -29,19 +29,19 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   }
   
   
-  .descExampleDistribution(jaspResults, options)
+  .descExplanation(jaspResults, options)
 }
 
 
-.descExampleDistribution<- function(jaspResults, options) {
-  jaspResults[["descExampleDistribution"]] <- createJaspContainer(gettext("Distribution"))
-  jaspResults[["descExampleDistribution"]]$position <- 2
+.descExplanation<- function(jaspResults, options) {
+  jaspResults[["descExplanation"]] <- createJaspContainer(gettext("Explanation"))
   
   mean <- 0
   sd <- 1
   skew <- 100
   
-  pdPlot <- createJaspPlot(title = gettext("Distribution"), width = 700, height = 400)
+  pdPlot <- createJaspPlot(title = gettext("Explanation"), width = 700, height = 800)
+  pdPlot$position <- 1
   
   
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 4*sd, mean + 4*sd ))
@@ -52,7 +52,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "")
   yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(pdPlotObject)$data[[1]]$y)
   yLimits <- range(yBreaks)
-    pdPlotObject <- pdPlotObject + ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits, name = "Density") +
+  pdPlotObject <- pdPlotObject + ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits, name = "Density") +
     jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
   
   if(options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM"){
@@ -82,7 +82,18 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
   }
   
-  pdPlot$plotObject <- pdPlotObject
+  
+  #text plot
+  textPlot <- .ggplotWithText("For a data set, the arithmetic mean, also known as arithmetic average, is a central value of a finite set of numbers: specifically, the sum of the values divided by the number of values. The arithmetic mean of a set of numbers x1, x2, ..., xn is typically denoted by xn. If the data set were based on a series of observations obtained by sampling from a statistical population, the arithmetic mean is the sample mean to distinguish it from the mean, or expected value, of the underlying distribution, the population mean .[1]
+                              
+                              Outside probability and statistics, a wide range of other notions of mean are often used in geometry and mathematical analysis; examples are given below.")
+  
+  
+  plotMat <- matrix(list(), 2, 1)
+  plotMat[[1, 1]] <- pdPlotObject
+  plotMat[[2, 1]] <- textPlot
+  
+  pdPlot$plotObject <- jaspGraphs::ggMatrixPlot(plotMat)
   
   jaspResults[["cltParentDistribution"]] <- pdPlot
 }
@@ -119,11 +130,47 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 .lstDescCreateBarplot <- function(jaspResults, options, data){
   jaspResults[["descBarplot"]] <- createJaspContainer(gettext("Barplot"))
-  jaspResults[["descBarplot"]]$position <- 1
   
-  barplot <- createJaspPlot(title = gettext("Barplot"), width = 700, height = 400)
-  barplotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
-    ggplot2::geom_bar()
-  barplot$plotObject <- barplotObject
-  jaspResults[["descBarplot"]] <- barplot
+  
+  bp <- createJaspPlot(title = gettext("Barplot"), width = 700, height = 400)
+  bp$position <- 2
+  bpPlotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
+    ggplot2::geom_bar() + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
+  
+  yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(bpPlotObject)$data[[1]]$y)
+  yLimits <- range(yBreaks)
+  
+  if(options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM"){
+    mean <- mean(data$x)
+    bpPlotObject <- bpPlotObject + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
+      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean = %.2f", mean)), 
+                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+  }
+  
+  bp$plotObject <- bpPlotObject
+  
+  jaspResults[["descBarplot"]] <- bp
+}
+
+
+.ggplotWithText <- function(text){
+  text <- "For a data set, the arithmetic mean, also known as arithmetic average, \n 
+  is a central value of a finite set of numbers: specifically, the sum of the values \n 
+  divided by the number of values. The arithmetic mean of a set of numbers x1, x2, ..., \n 
+  xn is typically denoted by xn. If the data set were based on a series of observations \n 
+  obtained by sampling from a statistical population, the arithmetic mean is the sample \n 
+  mean to distinguish it from the mean, or expected value, of the underlying distribution, \n
+  the population mean .[1]\n
+  \n                            
+  Outside probability and statistics, a wide range of other notions of mean are often used in \n 
+  geometry and mathematical analysis; examples are given below."
+  
+  nText <- length(text)
+  emptyBox <- data.frame(x = 0:10, y = 0:10)
+  annotation <- data.frame(x = 5, y = 5, label = text)
+  p <- ggplot2::ggplot(emptyBox, ggplot2::aes(x = x, y= y)) + ggplot2::geom_point(color = "white") + ggplot2::theme_void() +
+     ggplot2::geom_text(data=annotation, ggplot2::aes(x = x, y = y, label = label), size = 5)
+     #ggplot2::scale_y_continuous(breaks = 0:nText, limits = c(0, nText))
+  
+  return(p)
 }
