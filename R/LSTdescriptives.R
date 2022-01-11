@@ -16,13 +16,26 @@
 #
 
 LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
+  inputType <- options[["lstDescDataType"]]
+  data <- .getDataLSTdesc(jaspResults, options, inputType)
+  
+  if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
+    #all central tendeny plots go here
+    .lstDescCreateBarplot(jaspResults, options, data)
+  }
+  
+  if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
+    #all spread plots go here
+  }
+  
+  
   .descExampleDistribution(jaspResults, options)
 }
 
 
 .descExampleDistribution<- function(jaspResults, options) {
   jaspResults[["descExampleDistribution"]] <- createJaspContainer(gettext("Distribution"))
-  jaspResults[["descExampleDistribution"]]$position <- 1
+  jaspResults[["descExampleDistribution"]]$position <- 2
   
   mean <- 0
   sd <- 1
@@ -72,4 +85,45 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   pdPlot$plotObject <- pdPlotObject
   
   jaspResults[["cltParentDistribution"]] <- pdPlot
+}
+
+
+.getDataLSTdesc <- function(jaspResults, options, inputType) {
+  if (inputType == "dataRandom") {
+    data <- .sampleRandomDataForLSTdesc(jaspResults, options)
+  } else if (inputType == "dataSequence") {
+    data <- .readInputSequenceForLSTdesc(jaspResults, options)
+  } else if (inputType == "dataVariable") {
+    data <- .readDataLSTdesc(jaspResults, options)
+  }
+  return(data)
+}
+
+.sampleRandomDataForLSTdesc <- function(jaspResults, options){
+  #function to sample random data
+}
+
+
+.readInputSequenceForLSTdesc <- function(jaspResults, options){
+  inputSequence <- options[["lstDescDataSequenceInput"]]
+  inputSequence <- unlist(strsplit(inputSequence, split = ","))
+  inputSequence <- gsub(" ", "", inputSequence, fixed = TRUE)
+  df <- data.frame(x = as.numeric(inputSequence))
+  return(df)
+}
+
+
+.readDataLSTdesc <- function(jaspResults, options){
+  #function to read dataset
+}
+
+.lstDescCreateBarplot <- function(jaspResults, options, data){
+  jaspResults[["descBarplot"]] <- createJaspContainer(gettext("Barplot"))
+  jaspResults[["descBarplot"]]$position <- 1
+  
+  barplot <- createJaspPlot(title = gettext("Barplot"), width = 700, height = 400)
+  barplotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
+    ggplot2::geom_bar()
+  barplot$plotObject <- barplotObject
+  jaspResults[["descBarplot"]] <- barplot
 }

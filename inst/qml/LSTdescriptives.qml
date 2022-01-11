@@ -27,10 +27,6 @@ Form
 	columns: 1
 	
 	
-	
-	Group
-	{
-	
 				DropDown
 		{
 		name: "LSdescCentralOrSpread"
@@ -44,14 +40,18 @@ Form
 		id: lsDescCentralOrSpread
 		}
 		
-		
+	
+	Section
+	{
+	title: qsTr("Data options")
+	columns:	1
 			
 	RadioButtonGroup
 	{
 		columns:	3
-		name:		"dataType"
+		name:		"lstDescDataType"
 		title:		qsTr("Data Input Type")
-		id:			dataType
+		id:			lstDescDataType
 		
 		
 		
@@ -81,6 +81,77 @@ Form
 
 
 	}
+	
+	Group
+	{
+	columns: 2
+	
+	DoubleField
+	{
+				name:			"lstDescSampleN"
+				visible:	dataTypeA.checked
+				label:			qsTr("Sample size")
+				fieldWidth:		60
+				defaultValue:	100
+				decimals:		0
+	}
+	
+	DoubleField
+	{
+				name:			"lstDescSampleSeed"
+				visible:	dataTypeA.checked
+				label:			qsTr("Set seed")
+				fieldWidth:		60
+				defaultValue:	123
+				decimals:		0
+	}
+	
+	}
+	
+	
+	
+	Group
+	{
+	
+		RadioButtonGroup
+	{
+		columns:	3
+		name:		"lstDescSampleDistType"
+		visible:	dataTypeA.checked
+		title:		qsTr("Distribution Type")
+		id:			distributionType
+		
+		RadioButton
+		{
+			value:		"lstSampleDistDiscrete"
+			label:		qsTr("Discrete")
+			id:			distTypeDisc
+			checked:	true
+		}
+				
+		RadioButton
+		{
+			value:		"lstSampleDistCont"
+			label:		qsTr("Continuous")
+			id:			distTypeCont
+		}
+		
+		
+	}
+		
+			DropDown
+		{
+		name: "LSdescDiscreteDistributions"
+		visible:	dataTypeA.checked
+		label: qsTr("Distribution")
+		indexDefaultValue: 0
+		values:
+		[
+		{label: qsTr("Various discrete distributions"),		value: "variousDiscreteDistributions"},
+		]
+		id: lsDescDiscreteDistributions
+		}
+	}
 
 
 	TextArea
@@ -88,7 +159,7 @@ Form
 		title:		qsTr("Comma-separated Sequence of Observations")
 		visible:	dataTypeB.checked
 		height:		100
-		name:     "dataSequenceInput"
+		name:     "lstDescDataSequenceInput"
 		textType:	JASP.TextTypeSource
 		separators:	[",",";","\n"]
 	}
@@ -210,6 +281,24 @@ Form
 			checked: true
 					}
 					
+	}
+	
+	
+	
+			Section
+	{
+	title: qsTr("Plots")
+	
+	
+			CheckBox{name: "LSdescBarplot";
+			label: qsTr("Barplot");
+			checked: true
+					}
+					
+			CheckBox{name: "LSdescDotPlot";
+			label: qsTr("Dot plot");
+			checked: true
+					}
 	}
 	
 	
