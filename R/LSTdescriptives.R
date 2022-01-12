@@ -17,11 +17,17 @@
 
 LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   inputType <- options[["lstDescDataType"]]
-  data <- .getDataLSTdesc(jaspResults, options, inputType)
+  ready <- (inputType == "dataRandom" |
+              (inputType == "dataSequence" && options[["lstDescDataSequenceInput"]] != "") | 
+              (inputType == "dataVariable" && options[["selectedVariable"]] != ""))
   
-  if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
-    #all central tendeny plots go here
-    .lstDescCreateBarplot(jaspResults, options, data)
+  if (ready) {
+    data <- .getDataLSTdesc(jaspResults, options, inputType)
+    if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
+      #all central tendeny plots go here
+      .lstDescCreateBarplot(jaspResults, options, data)
+      .lstDescCreateDotplot(jaspResults, options, data)
+    }
   }
   
   if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
@@ -111,7 +117,11 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 }
 
 .sampleRandomDataForLSTdesc <- function(jaspResults, options){
-  #function to sample random data
+  if (options[["lstDescSampleDistType"]] == "lstSampleDistDiscrete") {
+    #discrete random functions
+  } else if (options[["lstDescSampleDistType"]] == "lstSampleDistCont") {
+    #continuous functions
+  }
 }
 
 
@@ -125,7 +135,11 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 
 .readDataLSTdesc <- function(jaspResults, options){
-  #function to read dataset
+  variable <- unlist(options[["selectedVariable"]])
+  variable <- variable[variable != ""]
+  dataset <- .readDataSetToEnd(columns.as.numeric = variable)
+  df <- data.frame(x = unlist(dataset))
+  return(df)
 }
 
 .lstDescCreateBarplot <- function(jaspResults, options, data){
@@ -134,22 +148,50 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   
   bp <- createJaspPlot(title = gettext("Barplot"), width = 700, height = 400)
   bp$position <- 2
+  
+  xBreaks <- seq(min(data$x), max(data$x))
+  
   bpPlotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
-    ggplot2::geom_bar() + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
+    ggplot2::geom_bar() + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe() +
+    ggplot2::scale_x_continuous(breaks = xBreaks)
   
   yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(bpPlotObject)$data[[1]]$y)
   yLimits <- range(yBreaks)
   
-  if(options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM"){
-    mean <- mean(data$x)
-    bpPlotObject <- bpPlotObject + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
-      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean = %.2f", mean)), 
-                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
-  }
+  bpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, bpPlotObject)
+  
+  # if(options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM"){
+  #   mean <- mean(data$x)
+  #   bpPlotObject <- bpPlotObject + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
+  #     ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean = %.2f", mean)), 
+  #                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+  # }
   
   bp$plotObject <- bpPlotObject
   
   jaspResults[["descBarplot"]] <- bp
+}
+
+.lstDescCreateDotplot <- function(jaspResults, options, data){
+  jaspResults[["descDotplot"]] <- createJaspContainer(gettext("Dotplot"))
+  
+  
+  dp <- createJaspPlot(title = gettext("Dotplot"), width = 700, height = 400)
+  dp$position <- 3
+  xBreaks <- seq(min(data$x), max(data$x))
+  
+  dpPlotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
+    ggplot2::geom_dotplot() + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe() +
+    ggplot2::scale_x_continuous(breaks = xBreaks)
+  
+  yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(dpPlotObject)$data[[1]]$ymax)
+  yLimits <- range(yBreaks)
+  
+  dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject)
+  
+  dp$plotObject <- dpPlotObject
+  
+  jaspResults[["descDotplot"]] <- dp
 }
 
 
@@ -169,8 +211,34 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   emptyBox <- data.frame(x = 0:10, y = 0:10)
   annotation <- data.frame(x = 5, y = 5, label = text)
   p <- ggplot2::ggplot(emptyBox, ggplot2::aes(x = x, y= y)) + ggplot2::geom_point(color = "white") + ggplot2::theme_void() +
-     ggplot2::geom_text(data=annotation, ggplot2::aes(x = x, y = y, label = label), size = 5)
-     #ggplot2::scale_y_continuous(breaks = 0:nText, limits = c(0, nText))
+    ggplot2::geom_text(data=annotation, ggplot2::aes(x = x, y = y, label = label), size = 5)
   
   return(p)
+}
+
+
+
+.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot){
+  yLimits <- range(ggplot2::ggplot_build(plot)$data[[1]]$y)
+  if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
+    mean <- mean(data$x)
+    plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
+      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean = %.2f", mean)), 
+                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+  }
+  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
+    median <- median(data$x)
+    plot <- plot +
+      ggplot2::geom_vline(xintercept = median, size = 1, color = "green") +
+      ggplot2::geom_label(data = data.frame(x = median, y = max(yLimits)*0.85, label = gettext("Median")), 
+                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+  }
+  if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
+    plotData <- ggplot2::ggplot_build(plot)$data[[1]]
+    mode <- plotData$x[plotData$y == max(plotData$y)]
+    plot <- plot + ggplot2::geom_vline(xintercept = mode, size = 1, color = "blue") + 
+      ggplot2::geom_label(data = data.frame(x = mode, y = max(yLimits)*0.75, label = gettext("Mode")), 
+                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+  }
+  return(plot)
 }
