@@ -142,14 +142,30 @@ Form
 			DropDown
 		{
 		name: "LSdescDiscreteDistributions"
-		visible:	dataTypeA.checked
+		visible:	dataTypeA.checked && distTypeDisc.checked
 		label: qsTr("Distribution")
 		indexDefaultValue: 0
 		values:
 		[
-		{label: qsTr("Various discrete distributions"),		value: "variousDiscreteDistributions"},
+		{label: qsTr("Binomial distribution"),		value: "binomialDist"},
+		{label: qsTr("Poisson distribution"),		value: "poissonDist"}
 		]
 		id: lsDescDiscreteDistributions
+		}
+		
+		DropDown
+		{
+		name: "LSdescContinuousDistributions"
+		visible:	dataTypeA.checked && distTypeCont.checked
+		label: qsTr("Distribution")
+		indexDefaultValue: 0
+		values:
+		[
+		{label: qsTr("Skewed normal distribution"),		value: "skewedNormal"},
+		{label: qsTr("Uniform distribution"),		value: "uniform"},
+		{label: qsTr("Normal distribution"),		value: "normal"}
+		]
+		id: lsDescContinuousDistributions
 		}
 	}
 
@@ -290,8 +306,8 @@ Form
 	title: qsTr("Plots")
 	
 	
-			CheckBox{name: "LSdescBarplot";
-			label: qsTr("Barplot");
+			CheckBox{name: "LSdescHistBar";
+			label: qsTr("Histogram / Barplot");
 			checked: true
 					}
 					
