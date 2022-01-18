@@ -309,7 +309,25 @@ Form
 			CheckBox{name: "LSdescHistBar";
 			label: qsTr("Histogram / Barplot");
 			checked: true
-					}
+			
+		RadioButtonGroup
+		{
+		name:                                   "LSdescHistCountOrDens"
+
+			RadioButton
+			{
+			name:                               "LSdescHistCount"
+			label:                              qsTr("Show count")
+			checked:                            true
+			}
+
+			RadioButton
+			{
+			name:                               "LSdescHistDens"
+			label:                              qsTr("Show density (Histogram only)")
+			}
+		}
+		}
 					
 			CheckBox{name: "LSdescDotPlot";
 			label: qsTr("Dot plot");

@@ -166,21 +166,21 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   p$position <- 2
   
   if (ready) {
-    xBreaks <- seq(min(data$x), max(data$x))
-    
-    plotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) 
     if (discrete){
-      plotObject <- plotObject + ggplot2::geom_bar()
+      xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
+      yBreaks <- unique(round(jaspGraphs::getPrettyAxisBreaks(c(0, table(data$x)))))
+      yLimits <- range(yBreaks) * 1.1
+      plotObject <- ggplot2::ggplot(data, ggplot2::aes(x = x)) + ggplot2::geom_bar(fill = "grey",
+                                                                                   col = "black", size = .3) + 
+        ggplot2::scale_y_continuous(name = "Counts", breaks = yBreaks, limits = yLimits) + 
+        ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks) + 
+        jaspGraphs::geom_rangeframe() + jaspGraphs::themeJaspRaw()
     } else{
-      plotObject <- plotObject + ggplot2::geom_histogram()
+      density <- options[["LSdescHistCountOrDens"]] == "LSdescHistDens"
+      plotObject <- jaspDescriptives:::.plotMarginal(data$x, variableName = "Observations", displayDensity = density,
+                                                     binWidthType = "sturges")
     }
-    plotObject <- plotObject + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe() +
-      ggplot2::scale_x_continuous(breaks = xBreaks)
-    
-    yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(plotObject)$data[[1]]$y)
-    yLimits <- range(yBreaks)
-    
-    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject)
+    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject, yLimits)
     p$plotObject <- plotObject
   }
   jaspResults[["descHistogramOrBarplot"]] <- p
@@ -192,21 +192,14 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   dp$position <- 3
   
   if (ready){
-    xBreaks <- seq(min(data$x), max(data$x))
-    
-    dpPlotObject <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = x)) + 
-      ggplot2::geom_dotplot() + jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe() +
-      ggplot2::scale_x_continuous(breaks = xBreaks)
-    
-    yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(dpPlotObject)$data[[1]]$ymax)
-    yLimits <- range(yBreaks)
-    
-    dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject)
-    
+    dpPlotObject <- .lstDescCreateDotPlotObject(data, options)
+    if ((options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMode" | options[["LSdescCT"]] == "LSdescMMM"))
+      dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject, yLimits = 1)
     dp$plotObject <- dpPlotObject
   }
   
   jaspResults[["descDotplot"]] <- dp
+  
 }
 
 
@@ -233,12 +226,12 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 
 
-.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot){
-  yLimits <- range(ggplot2::ggplot_build(plot)$data[[1]]$y)
+.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yLimits){
+  yLimits <- yLimits
   if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
     mean <- mean(data$x)
     plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
-      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits)*0.95, label = gettextf("Mean = %.2f", mean)), 
+      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits), label = gettextf("Mean = %.2f", mean)), 
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
   }
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
@@ -257,3 +250,45 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   }
   return(plot)
 }
+
+
+.lstDescCreateDotPlotObject <- function(data, options){
+  if (length(unique(data$x)) == 1){ 
+    dotsize <- .03
+  } else {
+    dotsize <- 1
+  }
+  
+  xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
+  xLimits <- range(xBreaks)
+  
+  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM"){
+    n <- length(data$x)
+    sortedDf <- data.frame(x = sort(data$x))
+    halfway <- round(n/2)   # not correct
+    data <- cbind(sortedDf, data.frame(y = rep("NO", n)))
+    data$y[halfway] <- "YES"
+    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x, fill = y)) +
+      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, stackratio = .8) +
+      ggplot2::scale_fill_manual(labels=c("NO", "YES"), values=c("grey", "green"))
+  } else {
+    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) + 
+      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', fill = 'grey', dotsize = dotsize, stackratio = .8)
+  }
+  p <-  p +
+    ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks, limits = xLimits) +
+    jaspGraphs::geom_rangeframe(sides = "b") +
+    jaspGraphs::themeJaspRaw() +
+    ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
+                   axis.title.y = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank())
+  return(p)
+}
+
+# .determineDotSizeAndRatio <- function(n){
+#   n <- 100
+#   dotsize <- 1
+#   stackratio <- 1
+#   df <- data.frame(x = rbinom(n, 10, .5))
+#   ggplot2::ggplot(df, ggplot2::aes(x =x)) + ggplot2::geom_dotplot(dotsize = dotsize, stackratio = stackratio)
+# }
