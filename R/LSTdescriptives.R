@@ -254,7 +254,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 .lstDescCreateDotPlotObject <- function(data, options){
   if (length(unique(data$x)) == 1){ 
-    dotsize <- .03
+    dotsize <- .0333
   } else {
     dotsize <- 1
   }
@@ -265,18 +265,30 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM"){
     n <- length(data$x)
     sortedDf <- data.frame(x = sort(data$x))
-    halfway <- round(n/2)   # not correct
-    data <- cbind(sortedDf, data.frame(y = rep("NO", n)))
-    data$y[halfway] <- "YES"
-    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x, fill = y)) +
-      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, stackratio = .8) +
-      ggplot2::scale_fill_manual(labels=c("NO", "YES"), values=c("grey", "green"))
+    halfway <- median(as.numeric(rownames(sortedDf)))
+    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) +
+      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, fill = "grey")
+    pData <- ggplot2::ggplot_build(p)$data
+    if(halfway %% 2 == 0){
+    halfwayDot <- pData[[1]][halfway,]
+    y0 <- ifelse(halfwayDot$countidx == 1, halfwayDot$width/2, halfwayDot$width/2 + (halfwayDot$countidx - 1) * halfwayDot$width)
+    circleData <- data.frame(x0 = halfwayDot$x, 
+                             y0 = y0,
+                             r = halfwayDot$width/2)
+    } else {
+      halfwayDots <- list("dot1" = pData[[1]][halfway - .5,],
+                          "dot2" = pData[[1]][halfway + .5,])
+    }
+    p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
+                                  inherit.aes = FALSE, fill = "green")
   } else {
     p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) + 
-      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', fill = 'grey', dotsize = dotsize, stackratio = .8)
+      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', fill = 'grey', dotsize = dotsize)
   }
-  p <-  p +
+  yLimits <- c(0, max(ggplot2::ggplot_build(p)$data[[1]]$countidx) * ggplot2::ggplot_build(p)$data[[1]][1,]$width) * 1.5
+  p <-  p + ggplot2::coord_fixed() +
     ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks, limits = xLimits) +
+    ggplot2::scale_y_continuous(limits = yLimits) +
     jaspGraphs::geom_rangeframe(sides = "b") +
     jaspGraphs::themeJaspRaw() +
     ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
@@ -292,3 +304,10 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 #   df <- data.frame(x = rbinom(n, 10, .5))
 #   ggplot2::ggplot(df, ggplot2::aes(x =x)) + ggplot2::geom_dotplot(dotsize = dotsize, stackratio = stackratio)
 # }
+
+# test_dp <- ggplot2::ggplot(data = data.frame(x = c(1, 2, 2, 2, 3)), mapping = ggplot2::aes(x = x)) + ggplot2::geom_dotplot()
+# test_dp_build <- ggplot2::ggplot_build(test_dp)
+# test_dp_build$data
+# 
+# test_dp + ggforce::geom_arc_bar(data = data.frame(x0 = 2, y0 = 0.09999 + 0.06666, r0 = 0.0333, ),
+#                                mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r), inherit.aes = F, fill = "green") + ggplot2::coord_fixed()

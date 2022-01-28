@@ -12,7 +12,8 @@ Imports:
   extraDistr,
   ggplot2,
   jaspBase,
-  jaspGraphs
+  jaspGraphs,
+  ggforce
 Remotes:
   jasp-stats/jaspBase,
   jasp-stats/jaspGraphs
