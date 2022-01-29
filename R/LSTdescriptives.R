@@ -177,10 +177,13 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
         jaspGraphs::geom_rangeframe() + jaspGraphs::themeJaspRaw()
     } else{
       density <- options[["LSdescHistCountOrDens"]] == "LSdescHistDens"
+      yBreaks <- (jaspGraphs::getPrettyAxisBreaks(c(0, max(data$x))))
+      yLimits <- range(yBreaks) * 1.1
       plotObject <- jaspDescriptives:::.plotMarginal(data$x, variableName = "Observations", displayDensity = density,
-                                                     binWidthType = "sturges")
+                                                     binWidthType = "sturges") 
+      
     }
-    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject, yLimits)
+    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject, yMax = max(yLimits))
     p$plotObject <- plotObject
   }
   jaspResults[["descHistogramOrBarplot"]] <- p
@@ -188,13 +191,15 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 .lstDescCreateDotplot <- function(jaspResults, options, data, ready){
   jaspResults[["descDotplot"]] <- createJaspContainer(gettext("Dotplot"))
-  dp <- createJaspPlot(title = gettext("Dotplot"), width = 700, height = 400)
+  height <- 400 + (length(data$x) / 50) * 25
+  dp <- createJaspPlot(title = gettext("Dotplot"), width = 700, height = height)
   dp$position <- 3
   
   if (ready){
-    dpPlotObject <- .lstDescCreateDotPlotObject(data, options)
+    dpPlotObjectList <- .lstDescCreateDotPlotObject(data, options)
+    dpPlotObject <- dpPlotObjectList$p
     if ((options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMode" | options[["LSdescCT"]] == "LSdescMMM"))
-      dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject, yLimits = 1)
+      dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject, yMax = dpPlotObjectList$yMax)
     dp$plotObject <- dpPlotObject
   }
   
@@ -226,26 +231,25 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 
 
-.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yLimits){
-  yLimits <- yLimits
+.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax){
   if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
     mean <- mean(data$x)
     plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
-      ggplot2::geom_label(data = data.frame(x = mean, y = max(yLimits), label = gettextf("Mean = %.2f", mean)), 
+      ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
   }
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
     median <- median(data$x)
     plot <- plot +
       ggplot2::geom_vline(xintercept = median, size = 1, color = "green") +
-      ggplot2::geom_label(data = data.frame(x = median, y = max(yLimits)*0.85, label = gettext("Median")), 
+      ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettext("Median")), 
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
   }
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
     plotData <- ggplot2::ggplot_build(plot)$data[[1]]
     mode <- plotData$x[plotData$y == max(plotData$y)]
     plot <- plot + ggplot2::geom_vline(xintercept = mode, size = 1, color = "blue") + 
-      ggplot2::geom_label(data = data.frame(x = mode, y = max(yLimits)*0.75, label = gettext("Mode")), 
+      ggplot2::geom_label(data = data.frame(x = mode, y = yMax*0.75, label = gettext("Mode")), 
                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
   }
   return(plot)
@@ -253,8 +257,11 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 
 .lstDescCreateDotPlotObject <- function(data, options){
+  n <- length(data$x)
   if (length(unique(data$x)) == 1){ 
     dotsize <- .0333
+  } else if (n > 50){
+    dotsize <- 1 - (log(n)) / 30
   } else {
     dotsize <- 1
   }
@@ -262,52 +269,59 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
   xLimits <- range(xBreaks)
   
+  p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) +
+    ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, fill = "grey") +
+    ggplot2::scale_x_continuous(name = "Value", breaks = xBreaks, limits = xLimits) +
+    ggplot2::coord_fixed()
+  
+  pData <- ggplot2::ggplot_build(p)$data
+  dotWidth <- pData[[1]]$width[1] * dotsize
+  yLabels <- unique(as.integer(jaspGraphs::getPrettyAxisBreaks(c(0, max(pData[[1]]$countidx)))))
+  yBreaks <- yLabels * dotWidth
+  yMax <- ifelse(max(yBreaks) < (6 * dotWidth), (6 * dotWidth), max(yBreaks))
+  yLimits <-  c(0, yMax + (2 * dotWidth))
+
+  p <- p + ggplot2::scale_y_continuous(name = "Count", limits = yLimits, breaks = yBreaks, labels = yLabels) + 
+    jaspGraphs::geom_rangeframe() +
+    jaspGraphs::themeJaspRaw()
+    # ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
+    #                axis.title.y = ggplot2::element_blank(),
+    #                axis.text.y = ggplot2::element_blank())
+  
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM"){
-    n <- length(data$x)
     sortedDf <- data.frame(x = sort(data$x))
     halfway <- median(as.numeric(rownames(sortedDf)))
-    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) +
-      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, fill = "grey")
-    pData <- ggplot2::ggplot_build(p)$data
-    if(halfway %% 2 == 0){
-    halfwayDot <- pData[[1]][halfway,]
-    y0 <- ifelse(halfwayDot$countidx == 1, halfwayDot$width/2, halfwayDot$width/2 + (halfwayDot$countidx - 1) * halfwayDot$width)
-    circleData <- data.frame(x0 = halfwayDot$x, 
-                             y0 = y0,
-                             r = halfwayDot$width/2)
-    } else {
-      halfwayDots <- list("dot1" = pData[[1]][halfway - .5,],
-                          "dot2" = pData[[1]][halfway + .5,])
+    if(n %% 2 != 0){   # if median is a single datapoint
+      halfwayDot <- pData[[1]][halfway,]
+      y0 <- ifelse(halfwayDot$countidx == 1, dotWidth/2, dotWidth/2 + (halfwayDot$countidx - 1) * dotWidth)
+      circleData <- data.frame(x0 = halfwayDot$x, 
+                               y0 = y0,
+                               r = dotWidth / 2)
+      p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
+                                    inherit.aes = FALSE, fill = "green")
+    } else {  # if median is the average of two points
+      halfwayDots <- list("lowerDot" = pData[[1]][halfway - .5,],
+                          "upperDot" = pData[[1]][halfway + .5,])
+      y0lower <- ifelse(halfwayDots$lowerDot$countidx == 1, dotWidth / 2, dotWidth / 2 + (halfwayDots$lowerDot$countidx - 1) * dotWidth)
+      y0upper <- ifelse(halfwayDots$upperDot$countidx == 1, dotWidth / 2, dotWidth / 2 + (halfwayDots$upperDot$countidx - 1) * dotWidth)
+      if (all(c(halfwayDots$lowerDot$count, halfwayDots$upperDot$count) == 1)) {
+        start <- c(pi * 2, pi * 2)
+        end <-c(pi * 3, pi)
+      } else {
+        start <- c(pi * 1.5, pi / 2)
+        end <- c(pi * 2.5, pi * 1.5)
+      }
+      circleData <- data.frame(x0 = c(halfwayDots$lowerDot$x, halfwayDots$upperDot$x),
+                               y0 = c(y0lower, y0upper),
+                               r = rep(dotWidth/2, 2),
+                               r0 = rep(0, 2),
+                               start = start,
+                               end = end)
+      
+      p <- p + ggforce::geom_arc_bar(data = circleData,
+                                     mapping = ggplot2::aes(x0 = x0, y0 = y0, r0 = r0, r = r,  start = start, end = end),
+                                     inherit.aes = FALSE, fill = "green")
     }
-    p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
-                                  inherit.aes = FALSE, fill = "green")
-  } else {
-    p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) + 
-      ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', fill = 'grey', dotsize = dotsize)
   }
-  yLimits <- c(0, max(ggplot2::ggplot_build(p)$data[[1]]$countidx) * ggplot2::ggplot_build(p)$data[[1]][1,]$width) * 1.5
-  p <-  p + ggplot2::coord_fixed() +
-    ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks, limits = xLimits) +
-    ggplot2::scale_y_continuous(limits = yLimits) +
-    jaspGraphs::geom_rangeframe(sides = "b") +
-    jaspGraphs::themeJaspRaw() +
-    ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
-                   axis.title.y = ggplot2::element_blank(),
-                   axis.text.y = ggplot2::element_blank())
-  return(p)
+  return(list("p" = p, "yMax" = max(yLimits) * .95))
 }
-
-# .determineDotSizeAndRatio <- function(n){
-#   n <- 100
-#   dotsize <- 1
-#   stackratio <- 1
-#   df <- data.frame(x = rbinom(n, 10, .5))
-#   ggplot2::ggplot(df, ggplot2::aes(x =x)) + ggplot2::geom_dotplot(dotsize = dotsize, stackratio = stackratio)
-# }
-
-# test_dp <- ggplot2::ggplot(data = data.frame(x = c(1, 2, 2, 2, 3)), mapping = ggplot2::aes(x = x)) + ggplot2::geom_dotplot()
-# test_dp_build <- ggplot2::ggplot_build(test_dp)
-# test_dp_build$data
-# 
-# test_dp + ggforce::geom_arc_bar(data = data.frame(x0 = 2, y0 = 0.09999 + 0.06666, r0 = 0.0333, ),
-#                                mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r), inherit.aes = F, fill = "green") + ggplot2::coord_fixed()
