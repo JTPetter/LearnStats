@@ -32,7 +32,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       .lstDescCreateHistogramOrBarplot(jaspResults, options, data, ready, discrete)
     }
     if (options[["LSdescDotPlot"]])
-      .lstDescCreateDotplot(jaspResults, options, data, ready)
+      .lstDescCreateDotplot(jaspResults, options, data, ready, discrete)
   }
   
   if(options[["LSdescCentralOrSpread"]] == "LSdescCentralTendency"){
@@ -170,26 +170,28 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
       yBreaks <- unique(round(jaspGraphs::getPrettyAxisBreaks(c(0, table(data$x)))))
       yLimits <- range(yBreaks) * 1.1
+      yMax <- max(yLimits)
       plotObject <- ggplot2::ggplot(data, ggplot2::aes(x = x)) + ggplot2::geom_bar(fill = "grey",
                                                                                    col = "black", size = .3) + 
         ggplot2::scale_y_continuous(name = "Counts", breaks = yBreaks, limits = yLimits) + 
         ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks) + 
         jaspGraphs::geom_rangeframe() + jaspGraphs::themeJaspRaw()
     } else{
-      density <- options[["LSdescHistCountOrDens"]] == "LSdescHistDens"
-      yBreaks <- (jaspGraphs::getPrettyAxisBreaks(c(0, max(data$x))))
-      yLimits <- range(yBreaks) * 1.1
-      plotObject <- jaspDescriptives:::.plotMarginal(data$x, variableName = "Observations", displayDensity = density,
+      displayDensity <- options[["LSdescHistCountOrDens"]] == "LSdescHistDens"
+      plotObject <- jaspDescriptives:::.plotMarginal(data$x, variableName = "Observations", displayDensity = displayDensity,
                                                      binWidthType = "sturges") 
-      
+      yMax <- max(ggplot2::ggplot_build(plotObject)$data[[1]]$y) * 1.1
+      yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(plotObject)$data[[2]]$y)
+      yLimits <- c(0, yMax)
+      plotObject <- plotObject + ggplot2::scale_y_continuous(limits = yLimits, breaks = yBreaks)
     }
-    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject, yMax = max(yLimits))
+    plotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, plotObject, yMax = yMax, discrete = discrete)
     p$plotObject <- plotObject
   }
   jaspResults[["descHistogramOrBarplot"]] <- p
 }
 
-.lstDescCreateDotplot <- function(jaspResults, options, data, ready){
+.lstDescCreateDotplot <- function(jaspResults, options, data, ready, discrete){
   jaspResults[["descDotplot"]] <- createJaspContainer(gettext("Dotplot"))
   height <- 400 + (length(data$x) / 50) * 25
   dp <- createJaspPlot(title = gettext("Dotplot"), width = 700, height = height)
@@ -199,7 +201,8 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     dpPlotObjectList <- .lstDescCreateDotPlotObject(data, options)
     dpPlotObject <- dpPlotObjectList$p
     if ((options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMode" | options[["LSdescCT"]] == "LSdescMMM"))
-      dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject, yMax = dpPlotObjectList$yMax)
+      dpPlotObject <- .drawMeanMedianOrModeLine(jaspResults, options, data, dpPlotObject, yMax = dpPlotObjectList$yMax,
+                                                lines = FALSE, discrete = discrete)
     dp$plotObject <- dpPlotObject
   }
   
@@ -231,26 +234,53 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 
 
-.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax){
+.drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax, lines = TRUE, discrete){
   if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
     mean <- mean(data$x)
-    plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
-      ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
-                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+    if (lines)
+      plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red")
+    plot <- plot + ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
+                                       mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
   }
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
     median <- median(data$x)
-    plot <- plot +
-      ggplot2::geom_vline(xintercept = median, size = 1, color = "green") +
-      ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettext("Median")), 
-                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+    if (lines)
+      plot <- plot + ggplot2::geom_vline(xintercept = median, size = 1, color = "green")
+    plot <- plot + ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettextf("Median = %.2f", median)), 
+                                       mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
   }
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
-    plotData <- ggplot2::ggplot_build(plot)$data[[1]]
-    mode <- plotData$x[plotData$y == max(plotData$y)]
-    plot <- plot + ggplot2::geom_vline(xintercept = mode, size = 1, color = "blue") + 
-      ggplot2::geom_label(data = data.frame(x = mode, y = yMax*0.75, label = gettext("Mode")), 
-                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+    if (length(unique(data$x)) == length(data$x)) {
+      modeLabelData <- data.frame(x = mean(data$x), y = yMax, label = gettext("All values unique, no mode defined."))
+      lines <- FALSE # also plot no line then
+    } else {
+      tableData <- table(data$x)
+      modeCol <- tableData[tableData == max(tableData)]
+      mode <- as.numeric(names(modeCol))
+      modeHeight <- as.numeric(modeCol)
+      plotData <- ggplot2::ggplot_build(plot)$data[[1]]
+      modeLineYPos <- max(plotData$y)
+      if (length(mode) == 1) {
+        modeLabelText <- ifelse(discrete, gettextf("Mode = %i (n = %i)", mode, modeHeight),
+                                gettextf("Mode = %.2f (n = %i)", mode, modeHeight))
+        modeLabelData <- data.frame(x = mean(data$x), y = yMax, label = modeLabelText)
+      } else {
+        firstMode <- ifelse(discrete, gettextf("Mode = {%i", mode[1]), gettextf("Mode = {%.2f", mode[1]))
+        if (discrete) {
+          otherModes <- gettextf(rep(", %i", length(mode) - 1), mode[2:length(mode)])
+        } else {
+          otherModes <- gettextf(rep(", %.2f", length(mode) - 1), mode[2:length(mode)])
+        }
+        otherModes <- paste(otherModes, collapse = "")
+        modeHeightString <- gettextf( "} (n = %i)", modeHeight)
+        modeLabelText <- paste(firstMode, otherModes, modeHeightString, sep = "")
+        modeLabelData <- data.frame(x = mean(mode), y = yMax, label = modeLabelText)
+      }
+    }
+    plot <- plot + ggplot2::geom_label(data = modeLabelData, 
+                                       mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+    if (lines)
+      plot <- plot + ggplot2::geom_hline(yintercept = modeLineYPos, size = 1, color = "blue") 
   }
   return(plot)
 }
@@ -267,7 +297,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   }
   
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
-  xLimits <- range(xBreaks)
+  xLimits <- c(min(xBreaks) * .9, max(xBreaks) * 1.1)
   
   p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) +
     ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, fill = "grey") +
@@ -280,25 +310,31 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   yBreaks <- yLabels * dotWidth
   yMax <- ifelse(max(yBreaks) < (6 * dotWidth), (6 * dotWidth), max(yBreaks))
   yLimits <-  c(0, yMax + (2 * dotWidth))
-
+  
   p <- p + ggplot2::scale_y_continuous(name = "Count", limits = yLimits, breaks = yBreaks, labels = yLabels) + 
     jaspGraphs::geom_rangeframe() +
     jaspGraphs::themeJaspRaw()
-    # ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
-    #                axis.title.y = ggplot2::element_blank(),
-    #                axis.text.y = ggplot2::element_blank())
+  # ggplot2::theme(axis.ticks.y = ggplot2::element_blank(),
+  #                axis.title.y = ggplot2::element_blank(),
+  #                axis.text.y = ggplot2::element_blank())
   
-  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM"){
+  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
     sortedDf <- data.frame(x = sort(data$x))
     halfway <- median(as.numeric(rownames(sortedDf)))
+    med <- median(data$x)
     if(n %% 2 != 0){   # if median is a single datapoint
       halfwayDot <- pData[[1]][halfway,]
       y0 <- ifelse(halfwayDot$countidx == 1, dotWidth/2, dotWidth/2 + (halfwayDot$countidx - 1) * dotWidth)
-      circleData <- data.frame(x0 = halfwayDot$x, 
+      x0 <- halfwayDot$x
+      circleData <- data.frame(x0 = x0, 
                                y0 = y0,
                                r = dotWidth / 2)
+      medianLineData <- data.frame(x = c(x0, med),
+                                   y = c(y0, max(yLimits) * .9))
       p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
-                                    inherit.aes = FALSE, fill = "green")
+                                    inherit.aes = FALSE, fill = "green") +
+        ggplot2::geom_path(data = medianLineData, mapping = ggplot2::aes(x = x, y = y), color = "green",
+                           size = 1)
     } else {  # if median is the average of two points
       halfwayDots <- list("lowerDot" = pData[[1]][halfway - .5,],
                           "upperDot" = pData[[1]][halfway + .5,])
@@ -317,11 +353,38 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
                                r0 = rep(0, 2),
                                start = start,
                                end = end)
+      medianLineData1 <- data.frame(x = c(halfwayDots$lowerDot$x, med),
+                                    y = c(y0lower, max(yLimits) * .95))
+      medianLineData2 <- data.frame(x = c(halfwayDots$upperDot$x, med),
+                                    y = c(y0upper, max(yLimits) * .95))
       
       p <- p + ggforce::geom_arc_bar(data = circleData,
                                      mapping = ggplot2::aes(x0 = x0, y0 = y0, r0 = r0, r = r,  start = start, end = end),
-                                     inherit.aes = FALSE, fill = "green")
-    }
+                                     inherit.aes = FALSE, fill = "green") + 
+        ggplot2::geom_path(data = medianLineData1, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1) +
+        ggplot2::geom_path(data = medianLineData2, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1)
+    } 
+    p <- p + ggplot2::geom_label(data = data.frame(x = med, y = max(yLimits) * .95, label = gettextf("Median = %.2f", median(data$x))), 
+                                 mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+  }
+  if (options[["LSdescCT"]] == "LSdescMean" || options[["LSdescCT"]] == "LSdescMMM"){
+    mean <- mean(data$x)
+    y0 <- dotWidth / 2
+    circleData <- data.frame(x0 = mean, 
+                             y0 = y0,
+                             r = dotWidth / 2)
+    meanLineData <- data.frame(x = c(mean, mean),
+                               y = c(y0 + dotWidth / 2,  max(yLimits) * .95))
+    p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
+                                  inherit.aes = FALSE, fill = "red", alpha = .3, color = "red", n = 4) + 
+      ggplot2::geom_path(data = meanLineData, mapping = ggplot2::aes(x = x, y = y), color = "red", size = .8)
+  }
+  if (options[["LSdescCT"]] == "Mode" || options[["LSdescCT"]] == "LSdescMMM"){
+    modeTable <- table(data$x)
+    mode <- as.numeric(names(modeTable[modeTable == max(modeTable)]))
+    modeHeight <- max(modeTable)
+    modeLineYPos <- (dotWidth/2) + dotWidth * modeHeight 
+    p <- p + ggplot2::geom_hline(yintercept = modeLineYPos, color = "blue", size = 1)
   }
   return(list("p" = p, "yMax" = max(yLimits) * .95))
 }
