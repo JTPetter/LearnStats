@@ -168,14 +168,14 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   
   if (ready) {
     if (discrete){
-      xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
+      xBreaks <- unique(as.integer(jaspGraphs::getPrettyAxisBreaks(data$x)))
       if (allCTs){
-        xLimits <- c(xBreaks[1], xBreaks[length(xBreaks)] * 1.3)
+        xLimits <- c(xBreaks[1] - abs(xBreaks[2] - xBreaks[1])/2, xBreaks[length(xBreaks)] * 1.4)
       } else {
-        xLimits <- range(xBreaks)
+        xLimits <- range(xBreaks[1] - abs(xBreaks[2] - xBreaks[1])/2, max(xBreaks))
       }
       yBreaks <- unique(round(jaspGraphs::getPrettyAxisBreaks(c(0, table(data$x)))))
-      yLimits <- range(yBreaks) * 1.1
+      yLimits <- range(yBreaks) * 1.3
       yMax <- max(yLimits)
       plotObject <- ggplot2::ggplot(data, ggplot2::aes(x = x)) + ggplot2::geom_bar(fill = "grey",
                                                                                    col = "black", size = .3) + 
@@ -185,15 +185,15 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     } else{
       displayDensity <- options[["LSdescHistCountOrDens"]] == "LSdescHistDens"
       xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
-      if (allCTs){
-        xLimits <- c(xBreaks[1], xBreaks[length(xBreaks)] * 1.3)
+      if (allCTs) {
+        xLimits <- c(xBreaks[1], xBreaks[length(xBreaks)] * 1.4)
       } else {
         xLimits <- range(xBreaks)
       }
       plotObject <- jaspDescriptives:::.plotMarginal(data$x, variableName = "Observations", displayDensity = displayDensity,
                                                      binWidthType = "sturges") 
-      yMax <- max(ggplot2::ggplot_build(plotObject)$data[[1]]$y) * 1.1
-      yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(plotObject)$data[[2]]$y)
+      yMax <- max(ggplot2::ggplot_build(plotObject)$data[[1]]$y) * 1.3
+      yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(plotObject)$data[[1]]$y)
       yLimits <- c(0, yMax)
       plotObject <- plotObject + ggplot2::scale_y_continuous(limits = yLimits, breaks = yBreaks) +
         ggplot2::scale_x_continuous(name = "Observations", breaks = xBreaks, limits = xLimits) 
@@ -250,30 +250,12 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 .drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax, lines = TRUE, discrete){
   xBreaks <- pretty(data$x)
   xPos <- median(xBreaks)
-  if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
-    mean <- mean(data$x)
-    if (lines)
-      plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red")
-    if (options[["LSdescCT"]] == "LSdescMean") {
-      plot <- plot + ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
-    } else if (options[["LSdescCT"]] == "LSdescMMM") {
-      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.1, y = yMax, label = gettextf("Mean = %.2f", mean)), 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
-    }
-  }
-  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
-    median <- median(data$x)
-    if (lines)
-      plot <- plot + ggplot2::geom_vline(xintercept = median, size = 1, color = "green")
-    plot <- plot + ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettextf("Median = %.2f", median)), 
-                                       mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
-  }
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
-    
-    if (length(unique(data$x)) == length(data$x)) {
-      modeLabelData <- data.frame(x = xPos, y = yMax, label = gettext("All values unique, no mode defined."))
-      lines <- FALSE # also plot no line then
+    modeLines <- lines
+    noMode <- length(unique(data$x)) == length(data$x)
+    if (noMode) {
+      modeLabelData <- data.frame(x = xPos, y = yMax * .9, label = gettext("All values unique, \n no mode defined."))
+      modeLines <- FALSE # also plot no line then
     } else {
       tableData <- table(data$x)
       modeCol <- tableData[tableData == max(tableData)]
@@ -297,9 +279,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
         modeLabelData <- data.frame(x = xPos, y = yMax, label = modeLabelText)
       }
     }
-    plot <- plot + ggplot2::geom_label(data = modeLabelData, 
-                                       mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
-    if (lines){
+    if (modeLines){
       if (discrete) {
         modeLineYPos <- max(plotData[[1]]$ymax)
         for (i in 1:length(mode)){
@@ -316,7 +296,41 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
         }
       }
       plot <- plot + ggplot2::geom_hline(yintercept = modeLineYPos, size = 1, color = "blue") 
-      
+    }
+    if (options[["LSdescCT"]] == "LSdescMode") {
+      plot <- plot + ggplot2::geom_label(data = modeLabelData, 
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+    } else if (options[["LSdescCT"]] == "LSdescMMM") {
+      modeLabelData$x <- max(xBreaks) * 1.1
+      modeLabelData$y <- ifelse(noMode, yMax * 0.75, yMax * .8)
+      plot <- plot + ggplot2::geom_label(data = modeLabelData, 
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+    }
+    
+    
+  }
+  if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
+    mean <- mean(data$x)
+    if (lines)
+      plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red")
+    if (options[["LSdescCT"]] == "LSdescMean") {
+      plot <- plot + ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+    } else if (options[["LSdescCT"]] == "LSdescMMM") {
+      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.1, y = yMax, label = gettextf("Mean = %.2f", mean)), 
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+    }
+  }
+  if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
+    median <- median(data$x)
+    if (lines)
+      plot <- plot + ggplot2::geom_vline(xintercept = median, size = 1, color = "green")
+    if (options[["LSdescCT"]] == "LSdescMedian") {
+      plot <- plot +  ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettextf("Median = %.2f", median)), 
+                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+    } else if (options[["LSdescCT"]] == "LSdescMMM") {
+      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.1, y = yMax * .9, label = gettextf("Median = %.2f", median)), 
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
     }
   }
   return(plot)
