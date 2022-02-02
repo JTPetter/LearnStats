@@ -249,8 +249,8 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 .drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax, lines = TRUE, discrete){
   xBreaks <- pretty(data$x)
-  xPos <- median(xBreaks)
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
+    xPos <- median(xBreaks)
     modeLines <- lines
     noMode <- length(unique(data$x)) == length(data$x)
     if (noMode) {
@@ -301,7 +301,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       plot <- plot + ggplot2::geom_label(data = modeLabelData, 
                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
-      modeLabelData$x <- max(xBreaks) * 1.1
+      modeLabelData$x <- max(xBreaks) * 1.2
       modeLabelData$y <- ifelse(noMode, yMax * 0.75, yMax * .8)
       plot <- plot + ggplot2::geom_label(data = modeLabelData, 
                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
@@ -317,7 +317,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       plot <- plot + ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
-      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.1, y = yMax, label = gettextf("Mean = %.2f", mean)), 
+      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.2, y = yMax, label = gettextf("Mean = %.2f", mean)), 
                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
     }
   }
@@ -329,7 +329,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       plot <- plot +  ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettextf("Median = %.2f", median)), 
                                           mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
-      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.1, y = yMax * .9, label = gettextf("Median = %.2f", median)), 
+      plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.2, y = yMax * .9, label = gettextf("Median = %.2f", median)), 
                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
     }
   }
@@ -347,8 +347,11 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     dotsize <- 1
   }
   
+  allCTs <- options[["LSdescCT"]] == "LSdescMMM"
+  
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
-  xLimits <- c(min(xBreaks) * .9, max(xBreaks) * 1.1)
+  xBuffer <- ifelse(allCTs, 1.4, 1.1)
+  xLimits <- c(min(xBreaks) * .9, max(xBreaks) * xBuffer)
   
   p <- ggplot2::ggplot(data = data, ggplot2::aes(x = x)) +
     ggplot2::geom_dotplot(binaxis = 'x', stackdir = 'up', dotsize = dotsize, fill = "grey") +
@@ -359,7 +362,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   dotWidth <- pData[[1]]$width[1] * dotsize
   yLabels <- unique(as.integer(jaspGraphs::getPrettyAxisBreaks(c(0, max(pData[[1]]$countidx)))))
   yBreaks <- yLabels * dotWidth
-  yMax <- ifelse(max(yBreaks) < (6 * dotWidth), (6 * dotWidth), max(yBreaks))
+  yMax <- ifelse(max(yBreaks) < (10 * dotWidth), (10 * dotWidth), max(yBreaks))
   yLimits <-  c(0, yMax + (2 * dotWidth))
   
   p <- p + ggplot2::scale_y_continuous(name = "Count", limits = yLimits, breaks = yBreaks, labels = yLabels) + 
@@ -383,9 +386,10 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       medianLineData <- data.frame(x = c(x0, med),
                                    y = c(y0, max(yLimits) * .9))
       p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
-                                    inherit.aes = FALSE, fill = "green") +
-        ggplot2::geom_path(data = medianLineData, mapping = ggplot2::aes(x = x, y = y), color = "green",
-                           size = 1)
+                                    inherit.aes = FALSE, fill = "green")
+      if (!allCTs)
+        p <- p +  ggplot2::geom_path(data = medianLineData, mapping = ggplot2::aes(x = x, y = y), color = "green",
+                                     size = 1)
     } else {  # if median is the average of two points
       halfwayDots <- list("lowerDot" = pData[[1]][halfway - .5,],
                           "upperDot" = pData[[1]][halfway + .5,])
@@ -411,12 +415,15 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       
       p <- p + ggforce::geom_arc_bar(data = circleData,
                                      mapping = ggplot2::aes(x0 = x0, y0 = y0, r0 = r0, r = r,  start = start, end = end),
-                                     inherit.aes = FALSE, fill = "green") + 
-        ggplot2::geom_path(data = medianLineData1, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1) +
-        ggplot2::geom_path(data = medianLineData2, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1)
-    } 
-    p <- p + ggplot2::geom_label(data = data.frame(x = med, y = max(yLimits) * .95, label = gettextf("Median = %.2f", median(data$x))), 
-                                 mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+                                     inherit.aes = FALSE, fill = "green")
+      if(!allCTs){
+        p <- p + ggplot2::geom_path(data = medianLineData1, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1) +
+          ggplot2::geom_path(data = medianLineData2, mapping = ggplot2::aes(x = x, y = y), color = "green", size = 1)
+      }
+    }
+    if(!allCTs)
+      p <- p + ggplot2::geom_label(data = data.frame(x = med, y = max(yLimits) * .95, label = gettextf("Median = %.2f", median(data$x))), 
+                                   mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
   }
   if (options[["LSdescCT"]] == "LSdescMean" || options[["LSdescCT"]] == "LSdescMMM"){
     mean <- mean(data$x)
@@ -427,8 +434,9 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     meanLineData <- data.frame(x = c(mean, mean),
                                y = c(y0 + dotWidth / 2,  max(yLimits) * .95))
     p <- p + ggforce::geom_circle(data = circleData, mapping = ggplot2::aes(x0 = x0, y0 = y0, r = r),
-                                  inherit.aes = FALSE, fill = "red", alpha = .3, color = "red", n = 4) + 
-      ggplot2::geom_path(data = meanLineData, mapping = ggplot2::aes(x = x, y = y), color = "red", size = .8)
+                                  inherit.aes = FALSE, fill = "red", alpha = .3, color = "red", n = 4)
+    if (!allCTs)
+      p <- p + ggplot2::geom_path(data = meanLineData, mapping = ggplot2::aes(x = x, y = y), color = "red", size = .8)
   }
   if (options[["LSdescCT"]] == "LSdescMode" || options[["LSdescCT"]] == "LSdescMMM"){
     if(length(unique(data$x)) != n){
