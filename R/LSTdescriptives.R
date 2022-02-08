@@ -249,6 +249,8 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 
 .drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax, lines = TRUE, discrete){
   xBreaks <- pretty(data$x)
+  n <- length(data$x)
+  labelSize <- 600 / (100 + n/2)
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
     xPos <- median(xBreaks)
     modeLines <- lines
@@ -299,15 +301,13 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     }
     if (options[["LSdescCT"]] == "LSdescMode") {
       plot <- plot + ggplot2::geom_label(data = modeLabelData, 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = labelSize)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
       modeLabelData$x <- max(xBreaks) * 1.2
       modeLabelData$y <- ifelse(noMode, yMax * 0.75, yMax * .8)
       plot <- plot + ggplot2::geom_label(data = modeLabelData, 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = 6)
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "blue", size = labelSize)
     }
-    
-    
   }
   if (options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM") {
     mean <- mean(data$x)
@@ -315,10 +315,10 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       plot <- plot + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red")
     if (options[["LSdescCT"]] == "LSdescMean") {
       plot <- plot + ggplot2::geom_label(data = data.frame(x = mean, y = yMax, label = gettextf("Mean = %.2f", mean)), 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = labelSize)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
       plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.2, y = yMax, label = gettextf("Mean = %.2f", mean)), 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = 6)
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "red", size = labelSize)
     }
   }
   if (options[["LSdescCT"]] == "LSdescMedian"| options[["LSdescCT"]] == "LSdescMMM") {
@@ -327,10 +327,10 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
       plot <- plot + ggplot2::geom_vline(xintercept = median, size = 1, color = "green")
     if (options[["LSdescCT"]] == "LSdescMedian") {
       plot <- plot +  ggplot2::geom_label(data = data.frame(x = median, y = yMax, label = gettextf("Median = %.2f", median)), 
-                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+                                          mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = labelSize)
     } else if (options[["LSdescCT"]] == "LSdescMMM") {
       plot <- plot + ggplot2::geom_label(data = data.frame(x = max(xBreaks) * 1.2, y = yMax * .9, label = gettextf("Median = %.2f", median)), 
-                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+                                         mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = labelSize)
     }
   }
   return(plot)
@@ -348,6 +348,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   }
   
   allCTs <- options[["LSdescCT"]] == "LSdescMMM"
+  labelSize <- 600 / (100 + n/2)
   
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
   xBuffer <- ifelse(allCTs, 1.4, 1.1)
@@ -423,7 +424,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
     }
     if(!allCTs)
       p <- p + ggplot2::geom_label(data = data.frame(x = med, y = max(yLimits) * .95, label = gettextf("Median = %.2f", median(data$x))), 
-                                   mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = 6)
+                                   mapping = ggplot2::aes(x = x, y = y, label = label), color = "green", size = labelSize)
   }
   if (options[["LSdescCT"]] == "LSdescMean" || options[["LSdescCT"]] == "LSdescMMM"){
     mean <- mean(data$x)
