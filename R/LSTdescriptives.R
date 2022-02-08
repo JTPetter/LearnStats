@@ -250,7 +250,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
 .drawMeanMedianOrModeLine <- function(jaspResults, options, data, plot, yMax, lines = TRUE, discrete){
   xBreaks <- pretty(data$x)
   n <- length(data$x)
-  labelSize <- 600 / (100 + n/2)
+  labelSize <- 3 + 300 / (100 + n * 2)
   if(options[["LSdescCT"]] == "LSdescMode"| options[["LSdescCT"]] == "LSdescMMM"){
     xPos <- median(xBreaks)
     modeLines <- lines
@@ -348,7 +348,7 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   }
   
   allCTs <- options[["LSdescCT"]] == "LSdescMMM"
-  labelSize <- 600 / (100 + n/2)
+  labelSize <- 3 + 300 / (100 + n * 2)
   
   xBreaks <- jaspGraphs::getPrettyAxisBreaks(data$x)
   xBuffer <- ifelse(allCTs, 1.4, 1.1)
