@@ -48,22 +48,26 @@ LSTdescriptives <- function(jaspResults, dataset, options, state = NULL) {
   
   mean <- 0
   sd <- 1
-  skew <- 100
+  skew <- 1000
    
   pdPlot <- createJaspPlot(title = gettext("Theoretical example distribution"), width = 500, height = 300)
   pdPlot$position <- 1
   
   
-  xBreaks <- jaspGraphs::getPrettyAxisBreaks(c(mean - 4*sd, mean + 4*sd ))
-  xLimits <- range(xBreaks)
+  xLimits <- c(mean - 5 * sd, mean + 5 * sd)
+  yLimits <- c(-.1 , .5)
+  hLineData <- data.frame(x = c(mean - 4 * sd, mean + 4 * sd), y = rep(0, 2))
+  
   df <- data.frame(x = .scaledSkewedNormal(100000, xi = mean, omega = sd, alpha = skew))
-  pdPlotObject <-  ggplot2::ggplot(df, ggplot2::aes(x = x)) + ggplot2::geom_density(mapping = ggplot2::aes(y = ..density..),
-                                                                                    n = 2^7, bw = sd/3) +
-    ggplot2::scale_x_continuous(breaks = xBreaks, limits = xLimits, name = "")
-  yBreaks <- jaspGraphs::getPrettyAxisBreaks(ggplot2::ggplot_build(pdPlotObject)$data[[1]]$y)
-  yLimits <- range(yBreaks)
-  pdPlotObject <- pdPlotObject + ggplot2::scale_y_continuous(breaks = yBreaks, limits = yLimits, name = "Density") +
-    jaspGraphs::themeJaspRaw() + jaspGraphs::geom_rangeframe()
+  pdPlotObject <-  ggplot2::ggplot(df, ggplot2::aes(x = x)) +
+    ggplot2::geom_density(mapping = ggplot2::aes(y = ..density..), n = 2^7, bw = sd/3, size = 1) +
+    ggplot2::geom_path(mapping = ggplot2::aes(x = x, y = y), data = hLineData, size = 1) +
+    ggplot2::ylim(yLimits) +
+    ggplot2::xlim(xLimits) +
+    jaspGraphs::themeJaspRaw() +
+    ggplot2::theme(axis.line = ggplot2::element_blank(), axis.ticks = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank(),
+                   axis.text.y = ggplot2::element_blank(), axis.title.y = ggplot2::element_blank())
   
   if(options[["LSdescCT"]] == "LSdescMean" | options[["LSdescCT"]] == "LSdescMMM"){
     pdPlotObject <- pdPlotObject + ggplot2::geom_vline(xintercept = mean, size = 1, color = "red") +
